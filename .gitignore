@@ -1,0 +1,22 @@
+
+# npm
+node_modules
+
+# automatically generated for any operations where npm modifies either the 
+# node_modules tree, or package.json
+package-lock.json
+
+# elm generated files
+elm-stuff
+repl-temp-*
+
+# "elm make" generated files
+elm.js
+index.html
+
+# log files
+*.log
+
+# code editors/IDEs
+.vscode
+

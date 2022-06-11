@@ -1,0 +1,444 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	vertical-align: baseline}
+/* remember to define focus styles! */
+:focus {
+	outline: 0}
+body {
+	background-image:url('index.jpg');
+	background-repeat:no-repeat;
+	background-color:black;
+	color: #0;
+	margin-left: 1em;
+	font-size: 1.0em;
+	line-height: 1}
+ol, ul {
+	list-style: none}
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+	border-collapse: separate;
+	border-spacing: 0}
+caption, th, td {
+	text-align: left;
+	font-weight: normal}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: ""}
+blockquote, q {
+	quotes: "" ""}
+input[type="submit"] {
+	color:#fff;
+	background-color:rgb(71,88,191);
+	border-radius:9px;
+	border: 1px solid rgb(71,88,191);
+	}
+em {
+	font-style:italic}
+#feedbackform {
+	display:block;
+	margin-left:2em;
+	}
+.feedback {
+	border: 3px orange double;
+	border-radius:15px;
+	}
+.message {
+	margin-left:2em;
+	margin-top:1em;
+	font-size:200%;
+	color:white;
+	}
+.message-body p {
+	margin-left:2em;
+	margin-top:1em;
+	font-size:120%;
+	color:white;
+}
+textarea {
+	padding:1em;
+	}
+#feedbackform input[type="text"] {
+	width:27em;
+	}
+#dateform {
+	position:absolute;
+	left:3em;
+	top:6.2em;
+	white-space: nowrap}
+label {
+	color: red;
+}
+	#feedbackform label {
+	color:white;
+	font-weight: normal;
+	font-size:140%;
+	display:block;
+	padding-top:.5em;}
+input {
+	margin-top:.2em;
+	margin-left:.2em}
+#instructions {
+	float: left;
+	width: 50%;
+	margin-left:2em;
+	margin-right:0em;
+	padding-top:0em;
+	padding-bottom:1em}
+p {
+	color:black;
+	background:none;
+	border:none;
+}
+#instructions p {
+		color: white;
+		background:none;
+		border:none;
+	}
+strong {
+	color:rgb(255,0,104);
+	font-weight:bold;
+	}
+sup {
+	vertical-align:top;
+	font-size:0.5em;
+	}
+select {
+	color:white;
+	background-color:black;
+	border:solid 1px rgb(71,88,191);
+	}
+#poem {
+	position:absolute;
+	margin-left:28em;
+	margin-top:-2em;
+	color:#33ddaa;
+	font-size:120%;
+	white-space: nowrap;
+	text-align:center}
+#poem span {
+	display:block;
+	}
+#l1, #l2 {color:rgb(71,88,191);}
+#l3 {color:rgb(255,0,104);}
+#l4 {color:white;}
+#poem > em {
+    color: gray;
+	font-style:italic}
+#lch {font-size:75%;}
+h1 {
+	position:absolute;
+	font-size:3.5em;
+	color:white;
+	top:0.2em;
+	left:6.2em;
+	}
+h2 {
+	color: white;
+	font-size:120%;
+	margin-top: 1em;
+	padding: .2em .2em }
+div#left {
+	visibility:hidden;
+	background: white;
+	float:left;
+	padding-bottom: 1em;
+	width: 20em;}
+div#right {
+	visibility:hidden;
+	float:left;
+	padding-left:2em;
+	padding-bottom: 1em;
+	position:absolute;
+	margin-left:20em;
+	width: 20em;}
+
+.note {
+	position:absolute;
+	border: 3px orange double;
+	border-radius:15px;
+	background-color:#fff;
+	padding:0em .35em .35em .35em;
+	}
+.note span {
+	color:#ff3355;
+	padding-left:.2em;
+	}
+.note p {
+	padding-top:.4em;
+	padding-left:.4em;
+	}
+
+.planet {
+	position:absolute;
+	cursor:pointer;
+	visibility: visible;
+	}
+
+#solarsystem {
+	border: 1px solid transparent;
+	color:black;
+	margin-top:2.0em;
+	height:33em;
+	width:61em;
+	}
+
+#pluto {
+	position:absolute;
+	margin-top:0em;
+	margin-left:1.1em;
+	}
+#pluto .planet {
+	margin-left:0em;
+	margin-top:2em;
+	width:.8em;height:.8em;
+	border-radius:40em;
+	}
+#pluto .note {
+	display:none;
+	margin-left:2.2em;margin-top:1em;
+	width:15em;
+	}
+#pluto .marker {
+	position:absolute;
+	margin-left:-1.8em;
+	margin-top:-6.0em;
+	}
+
+#uranus {
+	position:absolute;
+	margin-top:2.1em;
+	margin-left:9em;
+	}
+#uranus .planet {
+	margin-left:-0.2em;
+	margin-top:3.1em;
+	width:1.4em;height:1.4em;
+	border-radius:40em;
+	}
+#uranus .note {
+	display:none;
+	margin-left:2.3em;margin-top:0em;
+	width:15em;
+	}
+#uranus .marker {
+	position:absolute;
+	margin-left:-1.9em;
+	margin-top:-3.2em;
+	}
+
+#neptune {
+	position:absolute;
+	margin-top:0.3em;
+	margin-left:5.75em;
+	}
+#neptune .planet {
+	margin-left:-0.1em;
+	margin-top:3em;
+	width:.8em;height:.8em;
+	border-radius:40em;
+	}
+#neptune .note {
+	display:none;
+	margin-left:2.8em;margin-top:-0.7em;
+	width:15em;
+	}
+#neptune .marker {
+	position:absolute;
+	margin-left:-1.9em;
+	margin-top:-1.3em;
+	}
+
+#saturn {
+	position:absolute;
+	margin-top:7em;
+	margin-left:4em;
+	}
+#saturn .planet {
+	margin-top:2em;
+	margin-left:0em;
+	width:8em;height:3.3em;
+	}
+#saturn .note {
+	display:none;
+	margin-left:8.5em;margin-top:-0.4em;
+	width:15em;
+	}
+#saturn .marker {
+	position:absolute;
+	margin-left:-1.9em;
+	margin-top:-1.3em;
+	}
+
+#jupiter {
+	position:absolute;
+	height:10em;
+	margin-top:4em;margin-left:14em;
+	}
+#jupiter .planet {
+	margin-top:0.9em;
+	width:7.4em;height:7.4em;
+	border-radius:50em;
+	}
+#jupiter .note {
+	display:none;
+	margin-left:7.5em;
+	width:15em;
+	border-radius:5px;
+	}
+#jupiter .marker {
+	position:absolute;
+	margin-left:-1.9em;
+	margin-top:-1.3em;
+	}
+
+#mars {
+	position:absolute;
+	height:10em;
+	margin-top:7em;margin-left:23.1em;
+	}
+#mars .planet {
+	margin-top:1.9em;
+	width:2.8em;height:2.8em;
+	border-radius:50em;
+	}
+#mars .note {
+	display:none;
+	margin-left:4em;
+	width:15em;
+	}
+#marsnote {
+	display:block;
+	}
+#mars .marker {
+	position:absolute;
+	margin-left:-1.9em;
+	margin-top:-1.3em;
+	}
+
+#earth {
+	position:absolute;
+	margin-top:10.7em;margin-left:27em;
+	}
+#earth .planet {
+	width:8em;height:8em;
+	border-radius:50em;
+	}
+#earth .note {
+	display:none;
+	margin-left:9em;margin-top:2em;
+	width:15em;
+	}
+#earth .marker {
+	margin-left:-1.9em;
+	}
+	
+#venus {
+	position:absolute;
+	margin-top:19em;margin-left:32em;
+	}
+#venus .planet {
+	width:7.5em;height:7.5em;
+	border-radius:50em;
+	}
+#venus .note {
+	display:none;
+	margin-left:8em;margin-top:1.5em;
+	width:15em;
+	}
+#venus .marker {
+	margin-left:-1.9em;
+	}
+
+#mercury {
+	position:absolute;
+	margin-top:25em;margin-left:24em;
+	}
+#mercury .planet {
+	margin-left:16.7em;
+	margin-top:.6em;
+	width:2.7em;height:2.7em;
+	border-radius:50em;
+	}
+#mercury .note {
+	display:none;
+	margin-left:0em;margin-top:0.5em;
+	width:15em;
+	padding:.15em;
+	}
+#mercury .marker {
+	position:absolute;
+	margin-left:15.1em;
+	margin-top:-3.0em;
+	}
+
+div#ad {
+	position:absolute;
+    float: left;
+    margin-left:61.5em;
+    top:5em;
+    width: 10em}
+#greetform {
+	font-size:120%;
+	position:absolute;
+	margin-top:27em;
+	margin-left:15em;
+	width:20em;
+	color:white;
+	text-align:center;
+	background-color:transparent;
+	}
+#greetform input {
+	margin-top:.5em;
+	}
+#greetform input[type="text"] {
+	width:20em;
+	color:#fff;
+	background-color:rgb(0,16,104);
+	font-weight:bold;
+	border:1px solid rgb(71,88,191);
+	}
+.fb-like {
+	margin-left:2em;
+	margin-top:0.3em;
+	}
+#footer-prime {
+	font-family:'comic sans ms', 'comic sans';
+	position:absolute;
+	font-size: 110%;
+	font-weight:bold;
+	top:680px;
+	}
+#footer-support {
+	position:absolute;
+	font-size: 80%;
+	top:53em;
+	left:67em;
+	}
+#headbar {
+	padding-bottom:-2em;
+	}
+#logo {
+	margin-top:1em;
+	margin-left:2em;
+	width:18em;
+}
+#logo a {
+	color: #000;
+	text-decoration: none}
+#footer a {
+	color: #000;
+	text-decoration: none}
