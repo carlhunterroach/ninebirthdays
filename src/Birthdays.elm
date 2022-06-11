@@ -1,17 +1,18 @@
-module Birthdays exposing (
-    Birthdate
-    , calculate_birthdays
-    , compare
+module Birthdays exposing
+    ( Birthdate
     , PlanetaryBirthday
     , Today
+    , calculate_birthdays
+    , compare
     )
 
 import Date exposing (Date)
 import Planet exposing (OrbitDays, Planet(..), planets)
-import Time exposing (Month(..))
+
 
 type alias Years =
     Int
+
 
 type alias Today =
     Date
@@ -33,7 +34,9 @@ type alias PlanetaryBirthday =
     }
 
 
+
 -- FUNCTIONS
+
 
 toAge : Planet -> Birthdate -> Today -> Int
 toAge planet birthdate today =
@@ -53,6 +56,7 @@ toBirthday planet birthdate today =
 
         Alien _ orbit_days ->
             next_alien_birthday birthdate today orbit_days
+
 
 days_since_birth_zero_if_in_future : Birthdate -> Today -> Int
 days_since_birth_zero_if_in_future birthdate today =
@@ -104,6 +108,7 @@ next_alien_birthday birthdate today orbit =
             (toFloat next_age * orbit) |> floor
     in
     Date.add Date.Days days_to_next_birthday birthdate
+
 
 calculate_birthday : Birthdate -> Today -> Planet -> PlanetaryBirthday
 calculate_birthday birthdate today planet =
