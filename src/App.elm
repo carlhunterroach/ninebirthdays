@@ -51,7 +51,7 @@ app =
 
 
 type alias Model =
-    { user_birthdate : Birthdate
+    { userBirthdate : Birthdate
     , birthdays : List PlanetaryBirthday
     , today : Today
     , key : Nav.Key
@@ -62,7 +62,7 @@ type alias Model =
 
 initModel : Url.Url -> Nav.Key -> Model
 initModel url key =
-    { user_birthdate = fallbackBirthdate
+    { userBirthdate = fallbackBirthdate
     , birthdays = dummyBirthdaysReplacedByAppStarted
     , today = dummyTodayReplacedByAppStarted
     , key = key
@@ -77,8 +77,8 @@ init _ url key =
     )
 
 
-is_leap_year : Year -> Bool
-is_leap_year y =
+isLeapYear : Year -> Bool
+isLeapYear y =
     modBy 4 y == 0 && modBy 100 y /= 0 || modBy 400 y == 0
 
 
@@ -92,18 +92,18 @@ fallbackMonth =
     Jan
 
 
-default_day_or : String -> Int
-default_day_or dayString =
+defaultDayOr : String -> Int
+defaultDayOr dayString =
     Maybe.withDefault fallbackDay (String.toInt dayString)
 
 
-default_month_or : String -> Month
-default_month_or monthString =
+defaultMonthOr : String -> Month
+defaultMonthOr monthString =
     Date.numberToMonth (Maybe.withDefault fallbackMonthValue (String.toInt monthString))
 
 
-default_year_or : String -> Int
-default_year_or yearString =
+defaultYearOr : String -> Int
+defaultYearOr yearString =
     Maybe.withDefault fallbackYear (String.toInt yearString)
 
 
@@ -136,81 +136,81 @@ dummyBirthdaysReplacedByAppStarted =
 -- set Day input to correct number of days for Month/Year picked
 
 
-update_model_with_birthdate : Model -> Birthdate -> Model
-update_model_with_birthdate model new_birthdate =
+updateModelWithBirthdate : Model -> Birthdate -> Model
+updateModelWithBirthdate model newBirthdate =
     { model
-        | user_birthdate = new_birthdate
-        , birthdays = Birthdays.calculate_birthdays new_birthdate model.today
+        | userBirthdate = newBirthdate
+        , birthdays = Birthdays.calculateBirthdays newBirthdate model.today
     }
 
 
-update_birthdate_day : Birthdate -> String -> Birthdate
-update_birthdate_day birthdate dayString =
+updateBirthdateDay : Birthdate -> String -> Birthdate
+updateBirthdateDay birthdate dayString =
     Date.fromCalendarDate
         (Date.year birthdate)
         (Date.month birthdate)
-        (default_day_or dayString)
+        (defaultDayOr dayString)
 
 
-update_birthdate_month : Birthdate -> String -> Birthdate
-update_birthdate_month birthdate monthString =
+updateBirthdateMonth : Birthdate -> String -> Birthdate
+updateBirthdateMonth birthdate monthString =
     Date.fromCalendarDate
         (Date.year birthdate)
-        (default_month_or monthString)
+        (defaultMonthOr monthString)
         (Date.day birthdate)
 
 
-update_birthdate_year : Birthdate -> String -> Birthdate
-update_birthdate_year birthdate yearString =
+updateBirthdateYear : Birthdate -> String -> Birthdate
+updateBirthdateYear birthdate yearString =
     Date.fromCalendarDate
-        (default_year_or yearString)
+        (defaultYearOr yearString)
         (Date.month birthdate)
         (Date.day birthdate)
 
 
-on_birthdate_changed : Model -> Birthdate -> ( Model, Cmd Msg )
-on_birthdate_changed model birthdate =
-    ( update_model_with_birthdate model birthdate
+onBirthdateChanged : Model -> Birthdate -> ( Model, Cmd Msg )
+onBirthdateChanged model birthdate =
+    ( updateModelWithBirthdate model birthdate
     , Nav.pushUrl model.key ("?" ++ Date.toIsoString birthdate)
     )
 
 
-on_birthdate_picked : Model -> Birthdate -> ( Model, Cmd Msg )
-on_birthdate_picked model birthdate =
-    on_birthdate_changed model birthdate
+onBirthdatePicked : Model -> Birthdate -> ( Model, Cmd Msg )
+onBirthdatePicked model birthdate =
+    onBirthdateChanged model birthdate
 
 
-on_app_started : Model -> Today -> ( Model, Cmd Msg )
-on_app_started model today =
+onAppStarted : Model -> Today -> ( Model, Cmd Msg )
+onAppStarted model today =
     let
-        new_birthdate =
-            birthdate_from_url model.url
+        newBirthdate =
+            birthdateFromUrl model.url
     in
     ( { model
-        | user_birthdate = new_birthdate
+        | userBirthdate = newBirthdate
         , today = today
-        , birthdays = Birthdays.calculate_birthdays new_birthdate today
+        , birthdays = Birthdays.calculateBirthdays newBirthdate today
       }
     , Cmd.none
     )
 
 
-on_change_birthdate_url : Model -> Url.Url -> ( Model, Cmd Msg )
-on_change_birthdate_url model url =
+onChangeBirthdateUrl : Model -> Url.Url -> ( Model, Cmd Msg )
+onChangeBirthdateUrl model url =
     let
-        new_birthdate =
-            birthdate_from_url url
+        newBirthdate =
+            birthdateFromUrl url
     in
     ( { model
-        | user_birthdate = new_birthdate
-        , birthdays = Birthdays.calculate_birthdays new_birthdate model.today
+        | userBirthdate = newBirthdate
+        , birthdays = Birthdays.calculateBirthdays newBirthdate model.today
       }
-    , new_top_page url
+    , newTopPage url
     )
 
 
-new_top_page : Url.Url -> Cmd Msg
-new_top_page url =
+newTopPage : Url.Url -> Cmd Msg
+newTopPage url =
     Task.perform (\_ -> ChangeUrl url) (Dom.setViewport 0 0)
 
 
@@ -222,21 +222,21 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         DayPicked dayString ->
-            on_birthdate_picked model (update_birthdate_day model.user_birthdate dayString)
+            onBirthdatePicked model (updateBirthdateDay model.userBirthdate dayString)
 
         MonthPicked monthString ->
-            on_birthdate_picked model (update_birthdate_month model.user_birthdate monthString)
+            onBirthdatePicked model (updateBirthdateMonth model.userBirthdate monthString)
 
         YearPicked yearString ->
-            on_birthdate_picked model (update_birthdate_year model.user_birthdate yearString)
+            onBirthdatePicked model (updateBirthdateYear model.userBirthdate yearString)
 
-        AppStarted new_today ->
-            on_app_started model new_today
+        AppStarted newToday ->
+            onAppStarted model newToday
 
         LinkedClicked urlRequest ->
             case urlRequest of
                 Browser.Internal url ->
-                    on_change_birthdate_url model url
+                    onChangeBirthdateUrl model url
 
                 Browser.External href ->
                     ( model
@@ -245,7 +245,7 @@ update msg model =
 
         UrlChanged url ->
             ( { model
-                | user_birthdate = birthdate_from_url url
+                | userBirthdate = birthdateFromUrl url
                 , url = url
               }
             , Cmd.none
@@ -257,8 +257,8 @@ update msg model =
             )
 
 
-birthdate_from_url : Url.Url -> Birthdate
-birthdate_from_url url =
+birthdateFromUrl : Url.Url -> Birthdate
+birthdateFromUrl url =
     case Maybe.map Date.fromIsoString <| url.query of
         Just (Ok birthdate) ->
             birthdate
@@ -277,13 +277,13 @@ type WhenIsBirthday
     | Future
 
 
-is_birthday_today : PlanetaryBirthday -> WhenIsBirthday
-is_birthday_today birthday =
+isBirthdayToday : PlanetaryBirthday -> WhenIsBirthday
+isBirthdayToday birthday =
     if
-        Date.day birthday.earth_date
-            == Date.day birthday.today_on_earth
-            && Date.month birthday.earth_date
-            == Date.month birthday.today_on_earth
+        Date.day birthday.earthDate
+            == Date.day birthday.todayOnEarth
+            && Date.month birthday.earthDate
+            == Date.month birthday.todayOnEarth
     then
         Today
 
@@ -291,8 +291,8 @@ is_birthday_today birthday =
         Future
 
 
-ordinalised_date : Date -> String
-ordinalised_date date =
+ordinalisedDate : Date -> String
+ordinalisedDate date =
     let
         day =
             Date.format "d" date
@@ -300,14 +300,14 @@ ordinalised_date date =
     Ordinal.ordinal day ++ Date.format " MMM y" date
 
 
-smart_birthday_message : PlanetaryBirthday -> List (Html msg)
-smart_birthday_message birthday =
+smartBirthdayMessage : PlanetaryBirthday -> List (Html msg)
+smartBirthdayMessage birthday =
     {-
        specical case: if today is a birthday, then
        while technically the next birthday is an orit away
        we really should shout out Happy Birthday today!
     -}
-    case is_birthday_today birthday of
+    case isBirthdayToday birthday of
         Today ->
             [ span
                 [ style "font-family" "cursive" ]
@@ -315,18 +315,18 @@ smart_birthday_message birthday =
             ]
 
         Future ->
-            [ text (ordinalised_date birthday.earth_date)
+            [ text (ordinalisedDate birthday.earthDate)
             ]
 
 
-smart_age : PlanetaryBirthday -> Int
-smart_age birthday =
+smartAge : PlanetaryBirthday -> Int
+smartAge birthday =
     {-
        special case: if today is a birthday, then
        don't just return the up and coming age
        but the current age
     -}
-    case is_birthday_today birthday of
+    case isBirthdayToday birthday of
         Today ->
             birthday.age - 1
 
@@ -334,9 +334,9 @@ smart_age birthday =
             birthday.age
 
 
-smart_row_style : PlanetaryBirthday -> List (Attribute msg)
-smart_row_style birthday =
-    case is_birthday_today birthday of
+smartRowStyle : PlanetaryBirthday -> List (Attribute msg)
+smartRowStyle birthday =
+    case isBirthdayToday birthday of
         Today ->
             [ style "color" "yellow"
             , style "font-family" "cursive"
@@ -347,43 +347,43 @@ smart_row_style birthday =
             [ style "" "" ]
 
 
-view_birthday : PlanetaryBirthday -> Html Msg
-view_birthday birthday =
+viewBirthday : PlanetaryBirthday -> Html Msg
+viewBirthday birthday =
     let
         yearLocale =
             { usLocale
                 | decimals = Exact 0
             }
 
-        smartAge =
-            smart_age birthday
+        ageSmart =
+            smartAge birthday
 
         suffix =
-            if smartAge == 1 then
+            if ageSmart == 1 then
                 " yr"
 
             else
                 " yrs"
 
-        formatted_age =
-            FormatNumber.format yearLocale (toFloat smartAge)
+        formattedAge =
+            FormatNumber.format yearLocale (toFloat ageSmart)
     in
-    tr (smart_row_style birthday)
+    tr (smartRowStyle birthday)
         [ td
             [ style "text-align" "left"
             , style "padding-left" "0.5em"
             ]
-            [ text birthday.planet_name ]
+            [ text birthday.planetName ]
         , td
             [ style "text-align" "center"
             , style "padding-right" "0.1em"
             ]
-            (smart_birthday_message birthday)
+            (smartBirthdayMessage birthday)
         , td
             [ style "padding-left" "0.5em"
             , style "padding-right" "0.5em"
             ]
-            [ span [] [ text formatted_age ]
+            [ span [] [ text formattedAge ]
             , smallSpacer
             , span [ style "font-size" "80%" ] [ text suffix ]
             , smallSpacer
@@ -396,8 +396,8 @@ view_birthday birthday =
 -- VIEW
 
 
-birthday_table_heading : List (Attribute msg)
-birthday_table_heading =
+birthdayTableHeading : List (Attribute msg)
+birthdayTableHeading =
     [ style "text-align" "center"
     , style "background-color" "rgba(50,50,50,.7)"
     , style "border-radius" "15px"
@@ -416,26 +416,26 @@ footer =
     ]
 
 
-month_options : ( Int, String ) -> Html Msg
-month_options ( month_zero_indexed, string ) =
-    option [ value (String.fromInt (month_zero_indexed + 1)) ] [ text string ]
+monthOptions : ( Int, String ) -> Html Msg
+monthOptions ( monthZeroIndexed, string ) =
+    option [ value (String.fromInt (monthZeroIndexed + 1)) ] [ text string ]
 
 
-day_option : Int -> Html msg
-day_option day =
+dayOption : Int -> Html msg
+dayOption day =
     option [ value (String.fromInt day) ] [ text (String.fromInt day) ]
 
 
-day_options : Birthdate -> List (Html msg)
-day_options birthdate =
+dayOptions : Birthdate -> List (Html msg)
+dayOptions birthdate =
     let
         year =
             Date.year birthdate
 
-        day_max =
+        dayMax =
             case Date.month birthdate of
                 Feb ->
-                    if is_leap_year year then
+                    if isLeapYear year then
                         29
 
                     else
@@ -448,46 +448,46 @@ day_options birthdate =
                     else
                         31
     in
-    List.map day_option (List.range 1 day_max)
+    List.map dayOption (List.range 1 dayMax)
 
 
-year_options : Int -> Html msg
-year_options year =
+yearOptions : Int -> Html msg
+yearOptions year =
     option [ value (String.fromInt year) ] [ text (String.fromInt year) ]
 
 
-names_of_month : List String
-names_of_month =
+namesOfMonth : List String
+namesOfMonth =
     [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ]
 
 
-date_inputs : Model -> Html Msg
-date_inputs model =
+dateInputs : Model -> Html Msg
+dateInputs model =
     div []
         [ select
             [ style "font-size" "1.5em"
             , style "border-radius" ".2em"
             , onInput DayPicked
-            , value (String.fromInt (Date.day model.user_birthdate))
+            , value (String.fromInt (Date.day model.userBirthdate))
             ]
-            (day_options model.user_birthdate)
+            (dayOptions model.userBirthdate)
         , select
             [ style "font-size" "1.5em"
             , style "margin-left" ".3em"
             , style "margin-right" ".3em"
             , style "border-radius" ".2em"
             , onInput MonthPicked
-            , value (String.fromInt (Date.monthNumber model.user_birthdate))
+            , value (String.fromInt (Date.monthNumber model.userBirthdate))
             ]
-            (List.map month_options (List.indexedMap Tuple.pair names_of_month))
+            (List.map monthOptions (List.indexedMap Tuple.pair namesOfMonth))
 
         , select
             [ style "font-size" "1.5em"
             , style "border-radius" ".2em"
             , onInput YearPicked
-            , value (String.fromInt (Date.year model.user_birthdate))
+            , value (String.fromInt (Date.year model.userBirthdate))
             ]
-            (List.map year_options (List.range 1 (Date.year model.today)))
+            (List.map yearOptions (List.range 1 (Date.year model.today)))
         ]
 
 
@@ -524,8 +524,8 @@ vipLinks =
     ]
 
 
-compare_VIPs : ( String, String ) -> ( String, String ) -> Order
-compare_VIPs a b =
+compareVIPs : ( String, String ) -> ( String, String ) -> Order
+compareVIPs a b =
     if Tuple.second a < Tuple.second b then
         LT
 
@@ -533,8 +533,8 @@ compare_VIPs a b =
         GT
 
 
-view_VIP_link : ( String, String ) -> Html Msg
-view_VIP_link ( path, name ) =
+viewVIPLink : ( String, String ) -> Html Msg
+viewVIPLink ( path, name ) =
     li [ style "list-style-type" "none" ]
         [ a
             [ href ("?" ++ path)
@@ -544,8 +544,8 @@ view_VIP_link ( path, name ) =
         ]
 
 
-celebration_texts : List String
-celebration_texts =
+celebrationTexts : List String
+celebrationTexts =
     [ "On Mercury, spend sometime taking in the countryside"
     , "For a Venusian birthday, make a new favourite meal - no cardboard containers, please"
     , "On homely Earth, there is so much to celebrate and so much to do - try doing it with cake!!"
@@ -558,8 +558,8 @@ celebration_texts =
     ]
 
 
-view_celebration : String -> Html Msg
-view_celebration suggestion =
+viewCelebration : String -> Html Msg
+viewCelebration suggestion =
     li [ style "list-style-type" "none" ] [ text suggestion ]
 
 
@@ -593,14 +593,14 @@ view model =
                     []
                 ]
             , h2 [ style "margin-top" "-1.8em" ] [ text "Born on this day?" ]
-            , date_inputs model
+            , dateInputs model
             , h2
                 [ style "margin-bottom" "0"
                 , style "margin-top" "1em"
                 ]
                 [ text "Your next planetary birthdays are:" ]
-            , table birthday_table_heading
-                (List.map view_birthday <| List.sortWith Birthdays.compare model.birthdays)
+            , table birthdayTableHeading
+                (List.map viewBirthday <| List.sortWith Birthdays.compare model.birthdays)
             , div
                 [ style "color" "black"
                 , style "padding-top" "3em"
@@ -620,12 +620,12 @@ view model =
                 , div [ style "padding-top" "0.2em" ]
                     [ span [] [ text "A few examples" ]
                     , ul [ style "font-size" "75%" ]
-                        (List.map view_VIP_link <| List.sortWith compare_VIPs vipLinks)
+                        (List.map viewVIPLink <| List.sortWith compareVIPs vipLinks)
                     ]
                 , div []
                     [ p [] [ text "How to celebrate your 9 planetary birthdays" ]
                     , ul [ style "font-size" "60%" ]
-                        (List.map view_celebration celebration_texts)
+                        (List.map viewCelebration celebrationTexts)
                     ]
                 ]
             , div footer

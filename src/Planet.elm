@@ -11,8 +11,8 @@ type Planet
     | Alien Name OrbitDays
 
 
-earth_year_in_days : Float
-earth_year_in_days =
+earthYearInDays : Float
+earthYearInDays =
     365.2564363004
 
 planets : List Planet
@@ -23,11 +23,11 @@ planets =
         , ( Alien "Venus" 224.701 )
         , ( Earth "Earth" )
         , ( Alien "Mars" 686.980 )
-        , ( Alien "Jupiter" ( 11.8618 * earth_year_in_days ) )
-        , ( Alien "Saturn" ( 29.4571 * earth_year_in_days ) )
-        , ( Alien "Uranus" ( 84.0205 * earth_year_in_days ) )
-        , ( Alien "Neptune" ( 164.81 * earth_year_in_days ) )
-        , ( Alien "Pluto" ( 247.94 * earth_year_in_days)  )
+        , ( Alien "Jupiter" ( 11.8618 * earthYearInDays ) )
+        , ( Alien "Saturn" ( 29.4571 * earthYearInDays ) )
+        , ( Alien "Uranus" ( 84.0205 * earthYearInDays ) )
+        , ( Alien "Neptune" ( 164.81 * earthYearInDays ) )
+        , ( Alien "Pluto" ( 247.94 * earthYearInDays)  )
     ]
 
 toName : Planet -> Name

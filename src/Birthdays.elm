@@ -2,7 +2,7 @@ module Birthdays exposing
     ( Birthdate
     , PlanetaryBirthday
     , Today
-    , calculate_birthdays
+    , calculateBirthdays
     , compare
     )
 
@@ -27,10 +27,10 @@ type alias Birthday =
 
 
 type alias PlanetaryBirthday =
-    { planet_name : String
+    { planetName : String
     , age : Years
-    , earth_date : Birthday
-    , today_on_earth : Today
+    , earthDate : Birthday
+    , todayOnEarth : Today
     }
 
 
@@ -42,29 +42,29 @@ toAge : Planet -> Birthdate -> Today -> Int
 toAge planet birthdate today =
     case planet of
         Earth _ ->
-            next_earth_age birthdate today
+            nextEarthAge birthdate today
 
-        Alien _ orbit_days ->
-            next_alien_age birthdate today orbit_days
+        Alien _ orbitDays ->
+            nextAlienAge birthdate today orbitDays
 
 
 toBirthday : Planet -> Birthdate -> Today -> Birthday
 toBirthday planet birthdate today =
     case planet of
         Earth _ ->
-            next_earth_birthday birthdate today
+            nextEarthBirthday birthdate today
 
-        Alien _ orbit_days ->
-            next_alien_birthday birthdate today orbit_days
+        Alien _ orbitDays ->
+            nextAlienBirthday birthdate today orbitDays
 
 
-days_since_birth_zero_if_in_future : Birthdate -> Today -> Int
-days_since_birth_zero_if_in_future birthdate today =
+daysSinceBirthZeroIfInFuture : Birthdate -> Today -> Int
+daysSinceBirthZeroIfInFuture birthdate today =
     Basics.max 0 (Date.diff Date.Days birthdate today) + 1
 
 
-years_since_birth_zero_if_in_future : Birthdate -> Today -> Int
-years_since_birth_zero_if_in_future birthdate today =
+yearsSinceBirthZeroIfInFuture : Birthdate -> Today -> Int
+yearsSinceBirthZeroIfInFuture birthdate today =
     Basics.max 0 (Date.diff Date.Years birthdate today)
 
 
@@ -72,58 +72,58 @@ years_since_birth_zero_if_in_future birthdate today =
 -- FUNCTIONS
 
 
-next_earth_age : Birthdate -> Today -> Int
-next_earth_age birthdate today =
-    years_since_birth_zero_if_in_future birthdate today + 1
+nextEarthAge : Birthdate -> Today -> Int
+nextEarthAge birthdate today =
+    yearsSinceBirthZeroIfInFuture birthdate today + 1
 
 
-next_alien_age : Birthdate -> Today -> OrbitDays -> Int
-next_alien_age birthdate today orbit =
+nextAlienAge : Birthdate -> Today -> OrbitDays -> Int
+nextAlienAge birthdate today orbit =
     let
-        earth_days_since_birth =
-            days_since_birth_zero_if_in_future birthdate today
+        earthDaysSinceBirth =
+            daysSinceBirthZeroIfInFuture birthdate today
     in
-    ((toFloat earth_days_since_birth / orbit) |> floor) + 1
+    ((toFloat earthDaysSinceBirth / orbit) |> floor) + 1
 
 
-next_earth_birthday : Birthdate -> Today -> Birthday
-next_earth_birthday birthdate today =
+nextEarthBirthday : Birthdate -> Today -> Birthday
+nextEarthBirthday birthdate today =
     let
         years =
-            years_since_birth_zero_if_in_future birthdate today
+            yearsSinceBirthZeroIfInFuture birthdate today
     in
     Date.add Date.Years (years + 1) birthdate
 
 
-next_alien_birthday : Birthdate -> Today -> OrbitDays -> Birthday
-next_alien_birthday birthdate today orbit =
+nextAlienBirthday : Birthdate -> Today -> OrbitDays -> Birthday
+nextAlienBirthday birthdate today orbit =
     let
-        days_since_birth =
-            days_since_birth_zero_if_in_future birthdate today
+        daysSinceBirth =
+            daysSinceBirthZeroIfInFuture birthdate today
 
-        next_age =
-            ((toFloat days_since_birth / orbit) |> floor) + 1
+        nextAge =
+            ((toFloat daysSinceBirth / orbit) |> floor) + 1
 
-        days_to_next_birthday =
-            (toFloat next_age * orbit) |> floor
+        daysToNextBirthday =
+            (toFloat nextAge * orbit) |> floor
     in
-    Date.add Date.Days days_to_next_birthday birthdate
+    Date.add Date.Days daysToNextBirthday birthdate
 
 
 calculate_birthday : Birthdate -> Today -> Planet -> PlanetaryBirthday
 calculate_birthday birthdate today planet =
-    { planet_name = Planet.toName planet
+    { planetName = Planet.toName planet
     , age = toAge planet birthdate today
-    , earth_date = toBirthday planet birthdate today
-    , today_on_earth = today -- identify birthday's occuring today
+    , earthDate = toBirthday planet birthdate today
+    , todayOnEarth = today -- identify birthday's occuring today
     }
 
 
-calculate_birthdays : Birthdate -> Today -> List PlanetaryBirthday
-calculate_birthdays birthdate today =
+calculateBirthdays : Birthdate -> Today -> List PlanetaryBirthday
+calculateBirthdays birthdate today =
     List.map (calculate_birthday birthdate today) planets
 
 
 compare : PlanetaryBirthday -> PlanetaryBirthday -> Order
 compare a b =
-    Date.compare a.earth_date b.earth_date
+    Date.compare a.earthDate b.earthDate
