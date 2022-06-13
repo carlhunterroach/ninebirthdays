@@ -1,7 +1,7 @@
 module BirthdayTest exposing (..)
 
 import App exposing (..)
-import Birthdays exposing (calculate_birthdays, compare, PlanetaryBirthday)
+import Birthdays exposing (calculateBirthdays, compare, PlanetaryBirthday)
 import Date
 import Expect exposing (..)
 import Fuzz exposing (Fuzzer, int, list, string)
@@ -10,26 +10,26 @@ import Test exposing (..)
 import Time exposing (Month(..))
 
 
-fallback_date : Date.Date
-fallback_date =
+fallbackDate : Date.Date
+fallbackDate =
     Date.fromCalendarDate 1 Jan 1
 
 
-bad_planet : PlanetaryBirthday
-bad_planet =
-    { planet_name = "BadPlanet"
+badPlanet : PlanetaryBirthday
+badPlanet =
+    { planetName = "BadPlanet"
     , age = 99999
-    , earth_date = fallback_date
-    , today_on_earth = fallback_date
+    , earthDate = fallbackDate
+    , todayOnEarth = fallbackDate
     }
 
 
-not_mercury : PlanetaryBirthday
-not_mercury =
-    { planet_name = "NotMercury"
+notMercury : PlanetaryBirthday
+notMercury =
+    { planetName = "NotMercury"
     , age = 21
-    , earth_date = fallback_date
-    , today_on_earth = fallback_date
+    , earthDate = fallbackDate
+    , todayOnEarth = fallbackDate
     }
 
 
@@ -45,7 +45,7 @@ simple =
                     today =
                         Date.fromCalendarDate 2022 May 1
                 in
-                (List.length <| Birthdays.calculate_birthdays birthdate today)
+                (List.length <| Birthdays.calculateBirthdays birthdate today)
                     |> Expect.equal 9
         , test "Mercury is first planet?" <|
             \_ ->
@@ -57,12 +57,12 @@ simple =
                         Date.fromCalendarDate 2022 May 1
 
                     days =
-                        Birthdays.calculate_birthdays birthdate today
+                        Birthdays.calculateBirthdays birthdate today
 
                     day =
-                        Maybe.withDefault not_mercury (List.head days)
+                        Maybe.withDefault notMercury (List.head days)
                 in
-                day.planet_name |> Expect.equal "Mercury"
+                day.planetName |> Expect.equal "Mercury"
         ]
 
 
@@ -79,11 +79,11 @@ complex =
                         Date.fromCalendarDate 2022 May 1
 
                     days =
-                        Birthdays.calculate_birthdays birthdate today
+                        Birthdays.calculateBirthdays birthdate today
 
                     day =
-                        Maybe.withDefault bad_planet
-                            (List.head (List.filter (\m -> m.planet_name == "Earth") days))
+                        Maybe.withDefault badPlanet
+                            (List.head (List.filter (\m -> m.planetName == "Earth") days))
                 in
                 day.age |> Expect.equal 57
         , test "Earth birthday is same day of month/year?" <|
@@ -96,14 +96,14 @@ complex =
                         Date.fromCalendarDate 2022 May 1
 
                     days =
-                        Birthdays.calculate_birthdays birthdate today
+                        Birthdays.calculateBirthdays birthdate today
 
                     day =
                         Maybe.withDefault
-                            bad_planet
-                            (List.head (List.filter (\m -> m.planet_name == "Earth") days))
+                            badPlanet
+                            (List.head (List.filter (\m -> m.planetName == "Earth") days))
                 in
-                day.earth_date |> Expect.equal (Date.fromCalendarDate 2022 Sep 16)
+                day.earthDate |> Expect.equal (Date.fromCalendarDate 2022 Sep 16)
         , test "Test Date diff" <|
             \_ ->
                 let
@@ -123,17 +123,17 @@ complex =
         , test "check a birthdate on Jupiter" <|
             \_ ->
                 let
-                    planetary_birthdays =
-                        calculate_birthdays
+                    planetaryBirthdays =
+                        calculateBirthdays
                             (Date.fromCalendarDate 1965 Feb 13)
                             (Date.fromCalendarDate 2022 May 6)
 
                     jupiterish =
-                        List.head (List.drop 4 planetary_birthdays)
+                        List.head (List.drop 4 planetaryBirthdays)
                 in
                 case jupiterish of
                     Just jupiter ->
-                        Date.compare jupiter.earth_date (Date.fromCalendarDate 2024 Jun 5) |> Expect.equal EQ
+                        Date.compare jupiter.earthDate (Date.fromCalendarDate 2024 Jun 5) |> Expect.equal EQ
 
                     _ ->
                         Debug.todo "Never can reach here"
