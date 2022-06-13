@@ -256,12 +256,18 @@ update msg model =
             , Nav.pushUrl model.key (Url.toString url)
             )
 
+isCommonEra : Date -> Bool
+isCommonEra date =
+    Date.year date > 0
 
 birthdateFromUrl : Url.Url -> Birthdate
 birthdateFromUrl url =
     case Maybe.map Date.fromIsoString <| url.query of
         Just (Ok birthdate) ->
-            birthdate
+            if isCommonEra birthdate then
+                birthdate
+            else
+                fallbackBirthdate
 
         _ ->
             fallbackBirthdate
