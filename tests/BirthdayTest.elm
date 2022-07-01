@@ -1,12 +1,10 @@
 module BirthdayTest exposing (..)
 
 import App exposing (..)
-import Birthdays exposing (calculateBirthdays, compare, PlanetaryBirthday)
+import Birthdays exposing (calculateBirthdays, PlanetaryBirthday)
 import Date
-import Expect exposing (..)
-import Fuzz exposing (Fuzzer, int, list, string)
-import Planet exposing (planets)
-import Test exposing (..)
+import Expect
+import Test exposing (Test, describe, test)
 import Time exposing (Month(..))
 
 
@@ -32,6 +30,15 @@ notMercury =
     , todayOnEarth = fallbackDate
     }
 
+is_earth : PlanetaryBirthday -> Bool
+is_earth planetary_birthday =
+    planetary_birthday.planetName == "Earth"
+
+is_jupiter : PlanetaryBirthday -> Bool
+is_jupiter planetary_birthday =
+    planetary_birthday.planetName == "Jupiter"
+
+
 
 simple : Test
 simple =
@@ -47,7 +54,7 @@ simple =
                 in
                 (List.length <| Birthdays.calculateBirthdays birthdate today)
                     |> Expect.equal 9
-        , test "Mercury is first planet?" <|
+        , test "Mercury is first planet of birthdays?" <|
             \_ ->
                 let
                     birthdate =
@@ -83,7 +90,7 @@ complex =
 
                     day =
                         Maybe.withDefault badPlanet
-                            (List.head (List.filter (\m -> m.planetName == "Earth") days))
+                            ( List.head ( List.filter is_earth days ) )
                 in
                 day.age |> Expect.equal 57
         , test "Earth birthday is same day of month/year?" <|
@@ -101,7 +108,7 @@ complex =
                     day =
                         Maybe.withDefault
                             badPlanet
-                            (List.head (List.filter (\m -> m.planetName == "Earth") days))
+                            (List.head (List.filter is_earth days))
                 in
                 day.earthDate |> Expect.equal (Date.fromCalendarDate 2022 Sep 16)
         , test "Test Date diff" <|
@@ -129,7 +136,7 @@ complex =
                             (Date.fromCalendarDate 2022 May 6)
 
                     jupiterish =
-                        List.head (List.drop 4 planetaryBirthdays)
+                        List.head (List.filter is_jupiter planetaryBirthdays)
                 in
                 case jupiterish of
                     Just jupiter ->

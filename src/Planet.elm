@@ -10,7 +10,10 @@ type Planet
     = Earth Name
     | Alien Name OrbitDays
 
-
+{-  use for planets that take longer than an Earth year to orbit sun
+    can't use this value on Earth, because we use a calendar to
+    define a year on Earth, not a fixed-measure of time
+-}
 earthYearInDays : Float
 earthYearInDays =
     365.2564363004
