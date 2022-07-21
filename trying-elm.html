@@ -1,0 +1,373 @@
+<html>
+    <style>
+        h1 {
+            margin-bottom: 0.2em;
+        }
+        h2, h3 {
+            margin-bottom: 0;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            width: 37em;
+            margin-left:1em;
+        }
+        #strapline {
+            margin-top: 0;
+            font-style: italic;
+        }
+        code {
+            font-size: 110%;
+        }
+        img {
+            margin-right: 1em;
+            margin-bottom: 0.5em;
+            opacity: 90%;
+        }
+        lh {
+            font-weight: bold;
+        }
+        li {
+            list-style-type: none;
+        }
+    </style>
+<body>
+<h1>My first Functional Programming app</h1>
+<p id="strapline">Notes from the perspective of an experienced programmer, new to functional programming.</p>
+
+<p>Please don't take this as a step-by-step manual on building apps in Elm but an account of my experiences writing my first Elm app.</p>
+
+<p>Also, do take any critism of Elm I make as a sign post on my learning curve rather than a failing in Elm itself - I've much to learn and this is very much a write-up of my journey to <i>base camp</i> :)</p>
+
+<h2>Elm's background</h2>
+<p>From Wikipedia: <a href="https://en.wikipedia.org/wiki/Elm_(programming_language)#:~:text=Elm%20was%20initially%20designed%20by,out%20in%20a%20web%20browser.">Elm was initially designed by Evan Czaplicki</a> as his thesis in 2012.</p>
+
+<p>Evan <a href="https://github.com/elm/compiler">introduced Elm</a> as <i>A delightful language for reliable webapps.</i></p>
+
+<p>I do love that Evan set two goals, quite different in nature, for his new language. The first <i>you'll know delightful when you experience it</i> and the second, reliable, which can be measured empirically.</p>
+
+<h2>My Background</h2>
+
+<p>I've programmed using imperative languages for many years. I had looked at functional programming (FP) languages over those years but deployment was never straightforward for <i>hobby</i> applications which discouraged me from adopting any.</p>
+
+<p>FP languages are now going mainstream and some of their benefits are being retrofitted to many languages. While I considered using <i>retrofits</i> I choose a pure implementation to keep both the learning experience as direct as possible and to avoid the temptation of writing non-pure functions whenever I became stuck.</p>
+
+<p>I won't go into which FP languages I looked at but when I came across Elm, my reflex was to dismiss it out-of-hand. Elm compiles to JavaScript and I thought <i>why complicate the use of JavaScript?</i> I'd used <code>CoffeeScript</code> which also output <code>JavaScript</code>) code but I eventually just avoided using either. While I've never been a fan of JavaScript's <i>loosy-goosy</i> type system, it does make deployment a breeze.</p>
+
+<p>I prefer building browser interfaces in the backend but Elm's FP purity and that deployment ease convinced me to try it.</p>
+
+<p>The only reservation I had going in was if Elm was still being developed? The last version was released in 2019 <i>Friendly syntax hints, faster builds</i> and, 2018 <i>Smaller assets, faster builds</i>. No new features since 2017 <i>TO BE DONE</i>. Well, stability and speed are top features in my book. However, The Noisy Internet asked <i>Is Elm dead?</i> For me - there were enough souls using Elm to suggest that it <i>was</i> being used in 2022. I was going in.</p>
+
+<h2>My first Elm app</h2>
+<div>
+    <img src="img/9birthdays.png" title="9 Birthdays" alt="9 Birthdays logo; an elipsis enclosing a nine" width="20%" align="left" />
+    <p align="left">I have a hobby app that I've used to try out new languages. It's called <b>9 Birthdays</b> and it calculates when birthdays fall on each of our solar system's planets. While I wrote a server-side version in Python (until <a href="https://en.wikipedia.org/wiki/Google_App_Engine">GAE</a> updates broke it), app-store versions in Java and Objective C (both broke by app-store updates) this would be the first time I'd written 9 Birthdays in client-side browser code.</p>
+</div>
+
+<h2>Getting started</h2>
+<div>
+    <img src="img/mercury.png" title="Mercury" alt="Planet Mercury symbol" width="10%" align="left" />
+    <p align="left">I started with the <a href="https://guide.elm-lang.org/">Elm Guide</a>, working through the examples - this has links to <a href="https://package.elm-lang.org/packages/elm/core/">Elm Core Libraries</a>. I also found <a href="https://elmprogramming.com/">Beginning Elm</a> helpful.</p>
+</div>
+
+<p>The concise Guide made progress swift, and it does pop in a little humour from time to time to lighten the mood. The Guide kicks off with a short program to demonstrate, what I was later to learn, was The Elm Architecture (affectionately abbreviated to TEA). This sample program displays a web page with a value and two buttons to either increment or decrement this value. The Guide incorporates an online editor so one sees the sample code in action - very useful! I created a project using this code and set about changing it to prevent the decrementer setting a value lower than zero. I was an Elm programmer! :)</p>
+
+<p>The Elm Guide's succintness is partly down to the content being implicit in places and, I confess, I find knowledge explicity stated easier to take in and remember. For example, the Guide's <a href="https://guide.elm-lang.org/core_language.html">Core Language</a> page introduces <b>values</b> and gives examples of <code>42</code>, <code>True</code> and <code>"Hello!"</code>. But I missed not seeing a complete types' list.</p>
+
+<p>The Guide's conciseness belies its denseness - I recommend re-reading to pickup details missed on the pass. I still pick up something each time I refer to it!</p>
+
+<p>We soon learn that values have types in <a href="https://guide.elm-lang.org/types/reading_types.html">Reading Types</a> and more examples follow. Four value types are given: <code>String</code>, <code>Bool</code>, <code>Int</code> and <code>Float</code> but it's unclear if there are more such types in Elm.</p>
+
+<p>The closest I can get to a list is to search through the <a href="https://package.elm-lang.org/packages/elm/core/">Core</a> pages and look for <i>simple</i> types. I came up with <code>Bool</code>, <code>Float</code>, <code>Int</code> and <code>String</code>. I also saw <code>number</code> used but I didn't find a definition in either the Guide or Core pages.</p>
+    
+<p>The Elm <code>Maybe</code> optional-value type ensures code handles any undefined values. I'd come across <code>Optionals</code> in Swift, which use a question-mark syntax. Elm uses a rather syntactically verbose <code>case</code> expression. But as I was learning, functional programming encourages short functions to maximise reuseability so one verbose syntax isn't very important though I kept hankering for something more succinct :)</p>
+
+<p>It's best to avoid <code>Maybes</code> where practical. If a Maybe can be <i>designed out</i> then the Elm code is simpler.</p>
+
+<h3>The Elm Architecture (TEA)</h3>
+<p>TEA uses a record to hold an app's data, a function to return updated model data and a function to return the data, formatted within HTML*. Elm's runtime takes the formatted HTML, updates the DOM appropriately and does it all <a href="https://elm-lang.org/news/blazing-fast-html">blazingly fast</a>.</p>
+
+<h3>Custom types</h3>
+<p>Custom types are essential - TEA uses them to handle messaging, for example. I've used them myself in a similar vein to create variants, but as a beginner, I might be under-rating them!</p>
+
+<p>Every Elm app uses TEA giving them all the same starting point in reading the code.</p>
+
+<h3>Using <code>type aliases</code> to document code</h3>
+<p>The Guide covers <code>type aliases</code> for the naming of a <code>record</code> - perhaps other uses are deemed too simple to mention? They are essential for records but I also found them a really useful tool for self-documenting my code.</p>
+   
+<p>I want mad with them! With dates at 9 Birthdays' heart it's important to keep all the dates straight. Defining three <code>type aliases</code> enabled me to check the right <code>Date</code> instances were used.</p>
+<pre>
+    type alias Birthdate = Date
+    type alias Birthday = Date
+    type alias Today = Date
+</pre>
+<p>These are not distinct types so the compiler won't help you catch errors if passed into a function in the wrong order but they do document intent.</p>
+
+<h2>Writing 9 Birthdays</h2>
+<div>
+    <img src="img/venus.png" title="Venus" alt="Planet Venus symbol" width="10%" align="left" />
+    <p>Working through the Guide I make a mental note of the functionality I would need for 9 Birthdays and the concepts that will need to be used.</p>
+</div>
+
+<p>A HTML form is the most straightforward route to getting information from web users so the page on <a href="https://guide.elm-lang.org/architecture/text_fields.html">text fields</a> was a good place to start. <a href="https://guide.elm-lang.org/architecture/forms.html">Forms</a> goes deeper.</p>
+
+<p>I thought the <a href="https://guide.elm-lang.org/effects/time.html">Time</a> page might be useful in learning how dates worked. But it's dedicated to <code>Time</code>> and used <code>Subscriptions</code> which generate regular 'tick' events. Another page, <a href="https://guide.elm-lang.org/effects/random.html">Random</a>, explains how random-number generation works in Elm. One can't simply write <code>dice = Random(6)</code> or some such. The example needs a whole TEA-based program to explain how one <i>does</i> get a random number. Crikey!</p>
+
+<h3>Finding a Date package</h3>
+<p>I looked around Elm's Core Library to see how it handled dates but, with surprise, it doesn't have support, at least not as core code. Elm needs to keep its TEA runtime as small as possible so Core is really strict about what makes the cut. <i>Dates didn't make the cut.</i> I needed to <a href="https://package.elm-lang.org/">find a date package</a>. Searching for <core>date</core> returned 50+ hits. Four handled iso8601 data strings, seven datepickers and some included the word invali<b>date</b> and weren't relevant for 9 Birthdays. I also searched for <code>datetime</code> and <code>/date</code>** and this led me to <a href="https://package.elm-lang.org/packages/gribouille/elm-datetime/latest/">gribouille/elm-datetime</a> and <a href="https://package.elm-lang.org/packages/justinmimbs/date/latest/">justinmimbs/date</a>.</p>
+
+<p>Only needing dates, and after checking out its pages and src, I choose justinmimbs/date*** and it's served me well :)</p>
+
+<h3>The Elm paradigm</h3>
+<p>I've been programming for many years in various languages and there have been few paradigm shifts. While I strive to avoid thinking-in-the-last-language-used, I do still succumb to this danger.</p>
+
+<p>Elm's <i>no side-effects</i> paradigm was a real help in helping me to switch my mode of thinking. Not being able to retrieve the current date with a single function call immediately jolted me into thinking <i>I wasn't in Kansas anymore</i>. TEA uses an asynchronous-like approach to deliver functionality that would otherwise be a side-effect in a function.</p>
+
+<p>Back to the Guide, I skimmed the pages under Web apps (JavaScript Interops, URL Parsing, Modules and Structure) as they were aimed at larger apps, or at least, not one's first app. The <a href="https://guide.elm-lang.org/webapps/structure.html">Structure</a> makes a good point: <i>Do Not Plan Ahead</i>. I find this useful advice for most programming... laying down scaffolding that might be useful in the future unnecessarily complicates code. Elm, as I was to learn, instills one with confidence when refactoring.</p>
+
+<h3>Constants &amp; functions</h3>
+<div>
+    <p>Just a few words about defining functions. While the Guide makes a distinction made between Elm's basic types (e.g., <code>Int</code>, <code>String</code>) and its functions, it took a little while for me to realise that almost everything I wrote is a function.</p>
+
+    <p>Let me explain with a short code snippet:</p>
+    <pre>
+        fallbackMonth =
+            Jan
+
+        isCommonEra date =
+            Date.year date > 0
+    </pre>
+
+    <p>The app uses <code>fallbackMonth</code> when a birthdate month hasn't been received from the user. 9 Birthdays only calculates birthdates in the <code>isCommonEra</code>.</p>
+
+    <p>I thought of <code>fallbackMonth</code> as a constant and <code>isCommonEra</code> as a function (it is a function :). But <code>fallbackMonth</code> is also a function. It takes no parameters and returns the value of <code>Month</code>. I'd started writing functions but after adding some <i>constants</i> I realised, <i>they are both functions!</i></p>
+
+    <p>This led me to learning to annotate my functions. Doing so enables the compiler to be more helpful about errors in my code.</p>
+
+    <p>Here's the same code, annotated:
+    <pre>
+        fallbackMonth : Month
+        fallbackMonth =
+            Jan
+
+        isCommonEra : Date -> Bool
+        isCommonEra date =
+            Date.year date > 0
+    </pre>
+
+    It felt odd to repeat the function name (because that's not done in C, Python, Swift et al) but I think it leads to cleaner looking code, overall. Coming up with a syntax that inlines type information with value names is quite a challenge! I'd love to hear if there are other practical advantages to this syntax.
+    </p>
+</div>
+
+<h3>Application state</h3>
+<div>
+    <img src="img/mars.png" title="Mars" alt="Planet Mars symbol" width="10%" align="left" />
+    <p>A big difference to typical Object-oriented programming is, not that Elm doesn't have objects, but that it doesn't reinvent objects in a functional programming way. Instead of tying data and code together, it keeps the two separate. TEA passes the data around your app and your functions return updated data.</p>
+
+    <p>Without objects one doesn't need to create an object in order to write tests for a method, So writing tests is easier. As one's knowledge increases about the app domain, it's more likely easier to write additional tests after code is written: it's less likely that code needs restructuring to make writing tests easier.</p>
+
+    <p>Elm requires a <code>Model</code> record track an application's state.</p>
+    <p>Here's 9 Birthdays's <code>Model</code>:
+
+    <pre>
+        type alias Model =
+            { userBirthdate : Birthdate
+            , birthdays : List PlanetaryBirthday
+            , today : Today
+            }
+    </pre>
+    </p>
+    <p><code>Birthdate</code> is a typealias of <code>Date</code>, and <code>PlanetaryBirthday</code> is a type alias for this record:
+    <pre>
+        type alias PlanetaryBirthday =
+            { planetName : String
+            , age : Years
+            , earthDate : Birthday
+            , todayOnEarth : Today
+            }
+    </pre></p>
+    <p></p>I used type aliases to document my intent. Here we have <code>Years</code> (an <code>Int</code>), <code>Birthday</code> (<code>Date</code>) and <code>Today</code> (<code>Date</code>). Very handy when a function accepted both a birthday and the current date so I could check that I hadn't inadvertently swapped them over in a function call.
+    </pre>
+
+    <p>This <i>bashing</i> together of all the data felt very wrong at first. No Objects to place these in! :)</p>
+</div>
+<h3>Handling side-effects</h3>
+<div>
+    <img src="img/saturn.png" title="Saturn" alt="Planet Saturn symbol" width="10%" align="left" />
+    <p>My uneducated definition of <b>side-effect</b> was something along the lines of <i>a function that doesn't change any application state</i>. But I hadn't thought hard enough.</p>
+    <p>A definition for <a href="https://en.wikipedia.org/wiki/Pure_function">pure function</a> helped refine my understanding.</p><p>As did <a href="https://elmprogramming.com/side-effects.html"><i>pure functions must follow [the rule] that an expression must always evaluate to the same result in any context</a></i>.</p>
+
+    <p>In any context. My <i>ah-ha</i> moment. In any context means functions can't retrieve the current timestamp, generate a random number or have an interaction with the environment they run within that changes that environment<sup>&dagger;</sup>.</p>
+
+    <p><sup>&dagger;</sup>Well, Elm has one exception: a function can call <code>Task</code> and request some work be done. But such calls don't return data so can't change the function's evaluated result.</p>
+
+    <pre>
+        Task.perform AppStarted Date.today
+    </pre>
+
+    <code>AppStarted</code> is the <code>Msg variate</code> and <code>Date.today</code> is the function I want called. My app's <code>update</code> function will duely be called with a copy of the <code>model</code>, the <code>msg</code> set to <code>AppStarted</code> and access to today's date. <code>update</code> then updates the <code>model</code> with today's date.</p>
+
+    <p>So, the data model is how we avoid side-effects within our functions. If I require the current date it's retrieved asynchronously and the model updated. The <code>Model</code> is passed into functions as required. Any such functions are easy to write a test for because the date is passed in and not retrieved by the function itself. FP benefits were seeping into my consciousness.</p>
+</div>
+
+<h3>Elm forms</h3>
+<div>
+    <img src="img/jupiter.png" title="Jupiter" alt="Planet Jupiter symbol" width="10%" align="left" />
+    <p>My 9 Birthdays application can be simple: a form to retrieve a birthdate and output, listing a birthday for each of our planets. They can be embellished but the basics are enough to try out Elm.</p>
+
+    <p>For the form, I started with three text boxes to take a day, month and year; and a submit button to get to understand how forms work. Elm's <code>Model</code> record and <code>update</code> function syntax feel familar but its <code>view</code> function feels very different. Elm seemingly melds code, html tags and data together. Here I saw the expressive power of functions as they represented HTML tags.</p>
+
+    <p>Having understood some basics about generating HTML I switched the textboxes to drop-down lists. The following manages the <code>day</code> of a birthdate. HTMLers will find the Elm functions <code>select</code> and <code>value</code> familiar. Events are fired off as <code>DayPicked</code> messages and the dropdowns populated by my function <code>dayOptions</code> using <code>model.userBirthdate</code>.
+
+    <pre>
+        select
+            [ onInput DayPicked
+            , value ( String.fromInt ( Date.day model.userBirthdate ) )
+            ]
+            ( dayOptions model.userBirthdate )
+    </pre>
+
+    <p><code>dayOptions</code> returns an <code>option</code> list:</p>
+
+    <pre>
+        option [ value (String.fromInt day) ] [ text (String.fromInt day) ]
+    </pre>
+
+    <p>Again, very HTMLly, the equivalent looking, for example, list this:</p>
+
+    <pre>
+        &lt;select onChange="DayPicked(this.value)"&gt;
+            &lt;option>1&lt;/option&gt;
+            &lt;option selected>2&lt;/option&gt;
+            ...
+            &lt;option>31&lt;option&gt;
+        &lt;/select&gt;
+    </pre>
+
+    <p>The Elm version looks pretty clean and concise too. I would find myself occasionally typing misordered code such as <code>model.userBirthdate.day</code> and misplacing brackets such as <code>DayOptions(model.userBirthdate)</code> but as I built my first app, these mistakes faded out.</p>
+</div>
+
+<h3>Elm messaging</h3>
+<div>
+    <img src="img/uranus.png" title="Uranus" alt="Planet Uranus symbol" width="10%" align="left" />
+    <p>I mentioned <i>messages</i> when talking about events from forms. Well, messages enable apps to join up user actions with application consequences.</p>
+
+    <p>An app defines its messages using a custom type. Convention names this data structure <code>Msg</code></p>
+
+    <p>Here's an early version from 9 Birthdays:</p>
+    <pre>
+        type Msg
+        = DayPicked String
+        | MonthPicked String
+        | YearPicked String
+        | AppStarted Today
+    </pre>
+
+    <p>I did initially read this as variants of type <code>String</code> or <code>Today</code>. But each message variant is sent with data, in these cases, a <code>String</code> value or a <code>Today</code> value. For 9 Birthdays a message includes the value selected by the user when they set a birthdate; or the current day, retrieved when the application starts.</p>
+
+    <p>Each <code><i>x</i>Picked</code> variant marries up to one of the app's three drop-down lists. Messages are generated when a user sets a birthdate and an <code>update</code> function called for the consequence of such user actions.</p>
+
+    <p>The basic structure of an <code>update</code> function is quite simple: a single <code>case</code> statement that pattern-matches the message value to call the appropriate handling function.</p>
+
+    <p>My <code>update</code> is passed the <code>Msg</code> in a value called <code><b>msg</b></code> and a copy of my <code>Model</code> in a value called <code><b>model</b></code></p>
+
+    <pre>
+        update : Msg -> Model -> ( Model, Cmd Msg )
+        update <b>msg model</b> =
+            case msg of
+                DayPicked dayString ->
+                    <i>function call</i>
+
+                MonthPicked monthString ->
+                    <i>function call</i>
+
+                YearPicked yearString ->
+                    <i>function call</i>
+
+                AppStarted newToday ->
+                <i>function call</i>
+    </pre>
+
+    <p>At first, <code>Msg</code> looked like an invention of my app rather than by TEA. I named the structure, defined an <code>update</code> function and set the event name in my view. But there is some magic taking place. Elm defines a type variant <code>msg</code> (note the lowercase) that's bound to my <code>Msg</code> in function annotations.</p>
+
+    <p>In functions, common practice uses lowercase names of any values passed in. Thus a <code>Msg</code> type in a function annotation is handled as a <code>msg</code> value.</p>
+
+    <p>Having <code>Msg</code> and two different uses of <code>msg</code> in my first app did slow me down but, <a href="https://discourse.elm-lang.org/t/html-msg-vs-html-msg/2758">by the time I had worked it out</a> - after I had a working app by-the-way, it seemed sensible to stick with the Guide's naming convention. While renaming <code>Msg</code> to, say <code>Message</code> might have made this first app-build smoother, the one-to-one match with the type variant <code>msg</code> would be broken.</p>
+</div>
+
+<h3>Old habits</h3>
+<div>
+    <img src="img/earth.png" title="Earth" alt="Planet Earth symbol" width="10%" align="left" />
+    <p>9 Birthdays needs to calculate the number of times each planet rotates around our sun.</p>
+    <p>I defined a <code>type alias</code> for a function <code>NextBirthdayFunction</code> to calculate the next birthday on each planet and another to define <code>Planet</code> record:</p>
+    <pre>
+        type alias NextBirthdayFunction =
+            Birthdate -> Today -> OrbitDays -> Birthday
+
+        type alias Planet =
+            { name : String
+            , orbit : OrbitDays
+            , nextBirthday : NextBirthdayFunction
+            }
+    </pre>
+
+
+    <p>As I typed the code I knew I'd gone rogue. I was weaving code into data. It did work though :) I created a list of <code>Planet</code> and set each record's <code>nextBirthday</code> function field <code>nextBirthday</code> to the appropriate function. This avoided a <code>case</code> with nine cases to handle the nine planets.</p>
+
+    <p>Even so... I'm not here to implement C in Elm :) So, I had a rethink and started again with a custom type:</p>
+    <pre>
+        type Planet
+            = Earth Name
+            | Alient Name OrbitDays
+    </pre>
+
+    <p>This time, instead of <code>case</code> structures with nine clauses, they only needed two. Now the data is separate from the code, aiding reuse and testing.</p>
+
+    <p>The refactor was extensive, involving many functions. And the app wouldn't compile until I had finished all the changes. But you know what, once I'd made the changes, the app compiled and ran correctly first time. Elm had put a big <i>delightful</i> smile on my face :)</p>
+</div>
+
+<h3>Smelly TEA?</h3>
+<p>The one aspect of TEA that I found awkward was initialising my app with the current date.</p>
+<p>The app requests today's date via a <code>task</code> call, made during the initialsing process. The app model is also initialised at this point and, of course, today's date hasn't yet been retrieved. My workaround was to initialse the model with placeholder data and then in the <code>update</code> function, that TEA called with today's date, update the model.
+</p>
+
+<h2>Elm isn't just about the code</h2>
+<div>
+    <img src="img/neptune.png" title="Neptune" alt="Planet Neptune symbol" width="10%" align="left" />
+    <p>Once I felt I knew enough Elm to make progress I installed <a hef="https://elmprogramming.com/easy-to-test.html">Elm-test</a>. Tests are written in Elm so the syntax was mostly familar, though there's quite some indentation before you gets to your test code - perhaps I can find a better structure?</p>
+
+    <p>Once I had a basic version of 9 Birthdays, I also installed <a href="https://github.com/avh4/elm-format#usage">elm-format</a>. This helps the learning process as formats one's code to the <i>correct format</i>. Note that <code>elm-format</code> likes vertical space, but using it saved me time working out how to lay out case structures.</p>
+
+    <p>I also looked into <a href="https://package.elm-lang.org/packages/jfmengels/elm-review/latest/">elm-review</a>. Elm-review can find mistakes in your project but will also catch deviations from a house-style too. I'm not opinionated on Elm syntax just yet so I'll have to return to this tool in due course.</p>
+
+    <p>These tools made me realise where Elm effort is being put. Once the smallest number of flexible features were implemented, Evan moved to making the builds faster and the output run faster. Then, focus was directed at tooling. After tooling was underway, attention was further broadened to aid Elm adoption.</p>
+
+    <p>Much effort has been put into Elm's syntax by the way. The Guide's concise but dense text is not unlike Elm's choice in syntax too. There is much to be learned by reading Elm project source code to see how others have applied Elm to different problem domains.</p>
+
+    <p>I recommend checking out a lovely video where Evan discusses the <a href="https://www.youtube.com/watch?v=Vexdf-Rd-AE">first ten years of Elm</a> and where he'd like it to go next.</p>
+</div>
+
+<h2>What's next for my first app?</h2>
+<div>
+    <img src="img/pluto.png" title="Pluto" alt="Planet Pluto symbol" width="10%" align="left" />
+    <p>A basic version of <a href="http://9birthdays.com">9 Birthdays</a> is up and running. Adding functionality will likely require server-side code and, for now, I'd rather continue learning more about Elm.</p>
+    <p>I'll start with checking out view generation. There are two that go beyond the approach taken by the Guide: <a href="https://package.elm-lang.org/packages/rtfeldman/elm-css/latest/Css">elm-css</a> which provides a HTML/CSS-like syntax and <a href="https://package.elm-lang.org/packages/mdgriffith/elm-ui/latest/">elm-ui</a> which offers an alternative sytax to HTML/CSS to building user-interfaces.</p>
+    <p>I'd also like to get more familar with Elm syntax around <code>Maybe</code> and <code>Result</code> handling and TODO (>>) so that it becomes second-nature.</p>
+</div>
+
+<h2>Convert</h2>
+<div>
+    <p>I'm a convert to the benefits of functional programming and I have Evan and the people behind Elm to thank for that.</p>
+    <p>Evan is at noredink with Richard Feldman - perhaps Elm's first fan :) noredink is working on Roc, a functional language for broader use than Elm. Roc compiles to an executable or Web Assembling. It's going to be very interesting to see how planet Elm develops and how planet Roc finds a place in the solar system :)</p>
+</div>
+<footer>
+    <lh>Footnotes</lh>
+    <li>* it's more complicated or more flexible than that</li>
+    <li>** I'm impressed that this page can match against symbols</li>
+    <li>*** Package paths often include their authors name</li>
+</footer>
+
+
+</body>
+</html>
+
+

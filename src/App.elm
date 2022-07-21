@@ -7,9 +7,9 @@ import Browser.Navigation as Nav
 import Date exposing (Date)
 import FormatNumber
 import FormatNumber.Locales exposing (Decimals(..), usLocale)
-import Html exposing (Attribute, Html, a, div, h1, h2, img, li, option, p, select, span, table, td, text, tr, ul)
+import Html exposing (Attribute, Html, a, button, div, h1, h2, img, li, option, p, select, span, table, td, text, tr, ul)
 import Html.Attributes exposing (alt, href, src, style, title, value)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onClick, onInput)
 import Ordinal
 import Task
 import Time exposing (Month(..))
@@ -26,6 +26,7 @@ type Msg
     | YearPicked String
     | AppStarted Today
     | LinkedClicked Browser.UrlRequest
+    | TryingElm
     | UrlChanged Url.Url
     | ChangeUrl Url.Url
 
@@ -213,7 +214,38 @@ newTopPage : Url.Url -> Cmd Msg
 newTopPage url =
     Task.perform (\_ -> ChangeUrl url) (Dom.setViewport 0 0)
 
+onLinkedClicked : Model -> Browser.UrlRequest -> ( Model, Cmd Msg )
+onLinkedClicked model urlRequest =
+    case urlRequest of
+        Browser.Internal url ->
+            onChangeBirthdateUrl model url
 
+        Browser.External href ->
+            ( model
+            , Nav.load href
+            )
+
+
+onUrlChanged : Model -> Url.Url -> ( Model, Cmd Msg )
+onUrlChanged model url =
+    ( { model
+        | userBirthdate = birthdateFromUrl url
+        , url = url
+        }
+    , Cmd.none
+    )
+
+onChangeUrl : Model -> Url.Url -> ( Model, Cmd Msg )
+onChangeUrl model url =
+    ( model
+    , Nav.pushUrl model.key (Url.toString url)
+    )
+
+onTryingElm : Model -> ( Model, Cmd Msg )
+onTryingElm model =
+    ( model
+    , Nav.load "/trying-elm.html"
+    )
 
 -- UPDATE
 
@@ -234,27 +266,16 @@ update msg model =
             onAppStarted model newToday
 
         LinkedClicked urlRequest ->
-            case urlRequest of
-                Browser.Internal url ->
-                    onChangeBirthdateUrl model url
-
-                Browser.External href ->
-                    ( model
-                    , Nav.load href
-                    )
+            onLinkedClicked model urlRequest
 
         UrlChanged url ->
-            ( { model
-                | userBirthdate = birthdateFromUrl url
-                , url = url
-              }
-            , Cmd.none
-            )
+            onUrlChanged model url
 
         ChangeUrl url ->
-            ( model
-            , Nav.pushUrl model.key (Url.toString url)
-            )
+            onChangeUrl model url
+
+        TryingElm ->
+            onTryingElm model
 
 isCommonEra : Date -> Bool
 isCommonEra date =
@@ -574,7 +595,7 @@ view model =
     { title = "9Birthdays"
     , body =
         [ div
-            [ style "background-image" "url(solar-system.png)"
+            [ style "background-image" "url(/solar-system.png)"
             , style "background-repeat" "no-repeat"
             , style "width" "1000px"
             , style "color" "white"
@@ -592,7 +613,7 @@ view model =
                     , style "background-color" "black"
                     , style "padding" ".3em .3em .3em .3em"
                     , style "margin-top" "-1.1em"
-                    , src "logo.png"
+                    , src "/logo.png"
                     , alt "Find your 9Birthdays"
                     , title "Find your 9Birthdays"
                     ]
@@ -635,8 +656,28 @@ view model =
                     ]
                 ]
             , div footer
-                [ span [ style "font-family" "Arial, sans-serif" ]
+                [ div [ style "font-family" "Arial, sans-serif" ]
                     [ text "A small elm project, hosted by InfinityFree" ]
+                {- 
+                    use button to "hyperlink" out of app
+                    true [a] tags reserved for LinkedClicked msgs
+                    this avoids parsing types of internal URLs
+                -} 
+                , div [
+                    style "font-family" "Arial, sans-serif"
+                    , style "margin-top" "0.2em" ]
+                    [ button
+                        [ onClick TryingElm
+                        , style "text-decoration" "underline"
+                        , style "cursor" "pointer"
+                        , style "border" "none"
+                        , style "color" "#3894FF"
+                        , style "background-color" "white"
+                        , style "padding" "0.6em"
+                        , style "border-radius" "5px"
+                        ]
+                        [ text "My experiences trying Elm" ]
+                    ]
                 ]
             ]
         ]

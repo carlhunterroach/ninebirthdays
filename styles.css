@@ -19,10 +19,10 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 :focus {
 	outline: 0}
 body {
-	background-image:url('index.jpg');
+	background-image:url('solar-system.png');
 	background-repeat:no-repeat;
 	background-color:black;
-	color: #0;
+	color: #000000;
 	margin-left: 1em;
 	font-size: 1.0em;
 	line-height: 1}
