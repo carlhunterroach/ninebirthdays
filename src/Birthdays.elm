@@ -102,19 +102,13 @@ daysToNextBirthday : Float -> Int -> Int
 daysToNextBirthday orbit nextBirthdayAge =
     ( toFloat nextBirthdayAge * orbit ) |> floor
 
-{-| 
-    swapped parameter order of Date.add Date.Days to ease |> composition
--}
-datePlusDays : Date -> Int -> Date
-datePlusDays date days =
-    Date.add Date.Days days date
-
 nextAlienBirthday : Birthdate -> Today -> OrbitDays -> Birthday
 nextAlienBirthday birthdate today orbit =
-    daysSinceBirthZeroIfInFuture birthdate today
+    Date.add Date.Days (
+    ( daysSinceBirthZeroIfInFuture birthdate today
     |> ageAtNextBirthday orbit
-    |> daysToNextBirthday orbit
-    |> datePlusDays birthdate
+    |> daysToNextBirthday orbit ) )
+    birthdate
 
 calculate_birthday : Birthdate -> Today -> Planet -> PlanetaryBirthday
 calculate_birthday birthdate today planet =
