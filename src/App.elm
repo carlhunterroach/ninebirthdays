@@ -332,11 +332,7 @@ isBirthdayToday birthday =
 
 ordinalisedDate : Date -> String
 ordinalisedDate date =
-    let
-        day =
-            Date.format "d" date
-    in
-    Ordinal.ordinal day ++ Date.format " MMM y" date
+    Ordinal.ordinal (Date.format "d" date) ++ Date.format " MMM y" date
 
 
 smartBirthdayMessage : PlanetaryBirthday -> List (Html msg)
@@ -389,11 +385,6 @@ smartRowStyle birthday =
 viewBirthday : PlanetaryBirthday -> Html Msg
 viewBirthday birthday =
     let
-        yearLocale =
-            { usLocale
-                | decimals = Exact 0
-            }
-
         ageSmart =
             smartAge birthday
 
@@ -405,7 +396,11 @@ viewBirthday birthday =
                 " yrs"
 
         formattedAge =
-            FormatNumber.format yearLocale (toFloat ageSmart)
+            FormatNumber.format
+                { usLocale
+                    | decimals = Exact 0
+                }
+                (toFloat ageSmart)
     in
     tr (smartRowStyle birthday)
         [ td
@@ -468,13 +463,10 @@ dayOption day =
 dayOptions : Birthdate -> List (Html msg)
 dayOptions birthdate =
     let
-        year =
-            Date.year birthdate
-
         dayMax =
             case Date.month birthdate of
                 Feb ->
-                    if isLeapYear year then
+                    if isLeapYear (Date.year birthdate) then
                         29
 
                     else
