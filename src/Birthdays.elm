@@ -94,25 +94,27 @@ nextEarthBirthday birthdate today =
     in
     Date.add Date.Years (years + 1) birthdate
 
-nextAge : Float -> Int -> Int
-nextAge orbit daysSinceBirth =
+ageAtNextBirthday : Float -> Int -> Int
+ageAtNextBirthday orbit daysSinceBirth =
     ( ( toFloat daysSinceBirth / orbit ) |> floor ) + 1
 
 daysToNextBirthday : Float -> Int -> Int
-daysToNextBirthday orbit ageAtNextBirthday =
-    ( toFloat ageAtNextBirthday * orbit ) |> floor
+daysToNextBirthday orbit nextBirthdayAge =
+    ( toFloat nextBirthdayAge * orbit ) |> floor
 
-calculateNextAlienBirthday : Birthdate -> Int -> Birthday
-calculateNextAlienBirthday birthdate daysToNext =
-    Date.add Date.Days daysToNext birthdate
+{-| 
+    swapped parameter order of Date.add Date.Days to ease |> composition
+-}
+datePlusDays : Date -> Int -> Date
+datePlusDays date days =
+    Date.add Date.Days days date
 
 nextAlienBirthday : Birthdate -> Today -> OrbitDays -> Birthday
 nextAlienBirthday birthdate today orbit =
-    -- Date.add Date.Days ( daysToNextBirthday orbit ( nextAge orbit ( daysSinceBirthZeroIfInFuture birthdate today ) ) ) birthdate
     daysSinceBirthZeroIfInFuture birthdate today
-    |> nextAge orbit
+    |> ageAtNextBirthday orbit
     |> daysToNextBirthday orbit
-    |> calculateNextAlienBirthday birthdate
+    |> datePlusDays birthdate
 
 calculate_birthday : Birthdate -> Today -> Planet -> PlanetaryBirthday
 calculate_birthday birthdate today planet =
