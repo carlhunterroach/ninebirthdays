@@ -20,6 +20,7 @@ import Url
 type alias Year =
     Int
 
+
 type Msg
     = DayPicked String
     | MonthPicked String
@@ -59,7 +60,10 @@ type alias Model =
     , url : Url.Url
     }
 
+
+
 -- FUNCTIONS
+
 
 initModel : Url.Url -> Nav.Key -> Model
 initModel url key =
@@ -214,6 +218,7 @@ newTopPage : Url.Url -> Cmd Msg
 newTopPage url =
     Task.perform (\_ -> ChangeUrl url) (Dom.setViewport 0 0)
 
+
 onLinkedClicked : Model -> Browser.UrlRequest -> ( Model, Cmd Msg )
 onLinkedClicked model urlRequest =
     case urlRequest of
@@ -231,9 +236,10 @@ onUrlChanged model url =
     ( { model
         | userBirthdate = birthdateFromUrl url
         , url = url
-        }
+      }
     , Cmd.none
     )
+
 
 onChangeUrl : Model -> Url.Url -> ( Model, Cmd Msg )
 onChangeUrl model url =
@@ -241,11 +247,14 @@ onChangeUrl model url =
     , Nav.pushUrl model.key (Url.toString url)
     )
 
+
 onTryingElm : Model -> ( Model, Cmd Msg )
 onTryingElm model =
     ( model
     , Nav.load "/trying-elm.html"
     )
+
+
 
 -- UPDATE
 
@@ -277,9 +286,11 @@ update msg model =
         TryingElm ->
             onTryingElm model
 
+
 isCommonEra : Date -> Bool
 isCommonEra date =
     Date.year date > 0
+
 
 birthdateFromUrl : Url.Url -> Birthdate
 birthdateFromUrl url =
@@ -287,6 +298,7 @@ birthdateFromUrl url =
         Just (Ok birthdate) ->
             if isCommonEra birthdate then
                 birthdate
+
             else
                 fallbackBirthdate
 
@@ -507,7 +519,6 @@ dateInputs model =
             , value (String.fromInt (Date.monthNumber model.userBirthdate))
             ]
             (List.map monthOptions (List.indexedMap Tuple.pair namesOfMonth))
-
         , select
             [ style "font-size" "1.5em"
             , style "border-radius" ".2em"
@@ -658,14 +669,16 @@ view model =
             , div footer
                 [ div [ style "font-family" "Arial, sans-serif" ]
                     [ text "A small elm project, hosted by InfinityFree" ]
-                {- 
-                    use button to "hyperlink" out of app
-                    true [a] tags reserved for LinkedClicked msgs
-                    this avoids parsing types of internal URLs
-                -} 
-                , div [
-                    style "font-family" "Arial, sans-serif"
-                    , style "margin-top" "0.2em" ]
+
+                {-
+                   use button to "hyperlink" out of app
+                   true [a] tags reserved for LinkedClicked msgs
+                   this avoids parsing types of internal URLs
+                -}
+                , div
+                    [ style "font-family" "Arial, sans-serif"
+                    , style "margin-top" "0.2em"
+                    ]
                     [ button
                         [ onClick TryingElm
                         , style "text-decoration" "underline"
