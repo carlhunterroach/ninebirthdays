@@ -9,8 +9,7 @@ import Date exposing (Date)
 import FormatNumber
 import FormatNumber.Locales exposing (Decimals(..), usLocale)
 import Html.Styled exposing (Attribute, Html, a, button, div, h1, h2, img, li, option, p, select, span, table, td, text, tr, ul)
-import Html.Styled.Attributes
-import Html.Styled.Attributes exposing(css)
+import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events
 import Ordinal
 import Task
@@ -310,9 +309,9 @@ birthdateFromUrl url =
 
 smallSpacer : Html msg
 smallSpacer =
-    span [ 
-         Html.Styled.Attributes.css [ Css.fontSize (Css.pct 40) ]
-         ]
+    span
+        [ Html.Styled.Attributes.css [ Css.fontSize (Css.pct 40) ]
+        ]
         [ text " " ]
 
 
@@ -378,8 +377,7 @@ smartRowStyle : PlanetaryBirthday -> List (Attribute msg)
 smartRowStyle birthday =
     case isBirthdayToday birthday of
         Today ->
-            [
-              css [ Css.color white ]
+            [ css [ Css.color backdropTextColor ]
             , css [ Css.fontFamily Css.cursive ]
             , css [ Css.fontSize (Css.pct 105) ]
             ]
@@ -410,24 +408,24 @@ viewBirthday birthday =
     in
     tr (smartRowStyle birthday)
         [ td
-            [ css [Css.textAlign Css.left]
-            , css [Css.paddingLeft (Css.em 0.5) ]
+            [ css [ Css.textAlign Css.left ]
+            , css [ Css.paddingLeft (Css.em 0.5) ]
             ]
             [ text birthday.planetName ]
         , td
-            [ css [Css.textAlign Css.center]
-            , css [Css.paddingRight (Css.em 0.1)]
+            [ css [ Css.textAlign Css.center ]
+            , css [ Css.paddingRight (Css.em 0.1) ]
             ]
             (smartBirthdayMessage birthday)
         , td
-            [ css [Css.paddingLeft (Css.em 0.5)]
-            , css [Css.paddingRight (Css.em 0.5)]
+            [ css [ Css.paddingLeft (Css.em 0.5) ]
+            , css [ Css.paddingRight (Css.em 0.5) ]
             ]
             [ span [] [ text formattedAge ]
             , smallSpacer
-            , span [ css [Css.fontSize (Css.pct 80)] ] [ text suffix ]
+            , span [ css [ Css.fontSize (Css.pct 80) ] ] [ text suffix ]
             , smallSpacer
-            , span [ css [Css.fontSize (Css.pct 80)] ] [ text "old" ]
+            , span [ css [ Css.fontSize (Css.pct 80) ] ] [ text "old" ]
             ]
         ]
 
@@ -439,21 +437,25 @@ viewBirthday birthday =
 birthdayTableHeading : List (Attribute msg)
 birthdayTableHeading =
     [ css [ Css.textAlign Css.center ]
-    , css [ Css.backgroundColor (Css.rgba 50 50 50 0.7 ) ]
-    , css [ Css.borderRadius (Css.px 15)]
-    , css [ Css.marginLeft Css.auto]
-    , css [ Css.marginRight Css.auto]
-    , css [Css.marginTop (Css.em 1.8)]
+    , css [ Css.backgroundColor (Css.rgba 50 50 50 0.7) ]
+    , css [ Css.borderRadius (Css.px 15) ]
+    , css [ Css.marginLeft Css.auto ]
+    , css [ Css.marginRight Css.auto ]
+    , css [ Css.marginTop (Css.em 1.8) ]
     ]
 
 
-footer : List (Attribute msg)
+footer : Html Msg
 footer =
-    [ css [ Css.fontSize (Css.pct 60)]
-    , css [ Css.fontFamilies ["Arial", "sans-serif"] ]
-    , css [ Css.color black ]
-    , css [ Css.margin4 (Css.em 5) (Css.em 5) (Css.em 5) (Css.em 5) ]
-    ]
+    div
+        [ css [ Css.fontSize (Css.pct 60) ]
+        , css [ Css.fontFamilies [ "Arial", "sans-serif" ] ]
+        , css [ Css.color textColor ]
+        , css [ Css.margin4 (Css.em 5) (Css.em 5) (Css.em 5) (Css.em 5) ]
+        ]
+        [ acknowledgements
+        , myExperiences
+        ]
 
 
 monthOptions : ( Int, String ) -> Html Msg
@@ -506,31 +508,32 @@ namesOfMonth =
     , "September"
     , "October"
     , "November"
-    , "December" ]
+    , "December"
+    ]
 
 
 dateInputs : Model -> Html Msg
 dateInputs model =
     div []
         [ select
-            [ css [ Css.fontSize (Css.em 1.5)]
-            , css [Css.borderRadius (Css.em 0.2)]
+            [ css [ Css.fontSize (Css.em 1.5) ]
+            , css [ Css.borderRadius (Css.em 0.2) ]
             , Html.Styled.Events.onInput DayPicked
             , Html.Styled.Attributes.value (String.fromInt (Date.day model.userBirthdate))
             ]
             (dayOptions model.userBirthdate)
         , select
-            [ css [ Css.fontSize (Css.em 1.5)]
-            , css [Css.marginLeft (Css.em 0.3)]
-            , css [Css.marginRight (Css.em 0.3)]
-            , css [ Css.borderRadius (Css.em 0.2)]
+            [ css [ Css.fontSize (Css.em 1.5) ]
+            , css [ Css.marginLeft (Css.em 0.3) ]
+            , css [ Css.marginRight (Css.em 0.3) ]
+            , css [ Css.borderRadius (Css.em 0.2) ]
             , Html.Styled.Events.onInput MonthPicked
             , Html.Styled.Attributes.value (String.fromInt (Date.monthNumber model.userBirthdate))
             ]
             (List.map monthOptions (List.indexedMap Tuple.pair namesOfMonth))
         , select
-            [ css [ Css.fontSize (Css.em 1.5)]
-            , css [ Css.borderRadius (Css.em 0.2)]
+            [ css [ Css.fontSize (Css.em 1.5) ]
+            , css [ Css.borderRadius (Css.em 0.2) ]
             , Html.Styled.Events.onInput YearPicked
             , Html.Styled.Attributes.value (String.fromInt (Date.year model.userBirthdate))
             ]
@@ -582,10 +585,10 @@ compareVIPs a b =
 
 viewVIPLink : ( String, String ) -> Html Msg
 viewVIPLink ( path, name ) =
-    li [ css [Css.listStyleType Css.none ] ]
+    li [ css [ Css.listStyleType Css.none ] ]
         [ a
             [ Html.Styled.Attributes.href ("?" ++ path)
-            , css [Css.textDecoration Css.none]
+            , css [ Css.textDecoration Css.none ]
             ]
             [ text name ]
         ]
@@ -607,150 +610,179 @@ celebrationTexts =
 
 viewCelebration : String -> Html Msg
 viewCelebration suggestion =
-    li [ css [Css.listStyleType Css.none ] ] [ text suggestion ]
+    li [ css [ Css.listStyleType Css.none ] ] [ text suggestion ]
+
 
 black : Css.Color
 black =
     Css.rgb 0 0 0
 
+
 white : Css.Color
-white = 
+white =
     Css.rgb 255 255 255
 
+
+textColor : Css.Color
+textColor =
+    black
+
+
+backdropTextColor : Css.Color
+backdropTextColor =
+    white
+
+
 backdrop : List (Attribute msg)
-backdrop = 
-    [ css [Css.backgroundImage (Css.url "/solar-system.png") ]
-    , css [Css.backgroundRepeat Css.noRepeat ]
-    , css [Css.width (Css.px 1000) ]
-    , css [Css.color white ]
-    , css [Css.textAlign Css.center ]
-    , css [Css.margin4 (Css.em 0.5) (Css.em 0.5) (Css.em 0.5) (Css.em 0.5) ]
-    , css [Css.fontFamilies ["Arial", "sans-serif" ] ]
-    , css [Css.fontSize (Css.em 1.5) ]
+backdrop =
+    [ css [ Css.backgroundImage (Css.url "/solar-system.png") ]
+    , css [ Css.backgroundRepeat Css.noRepeat ]
+    , css [ Css.width (Css.px 1000) ]
+    , css [ Css.color backdropTextColor ]
+    , css [ Css.textAlign Css.center ]
+    , css [ Css.margin4 (Css.em 0.5) (Css.em 0.5) (Css.em 0.5) (Css.em 0.5) ]
+    , css [ Css.fontFamilies [ "Arial", "sans-serif" ] ]
+    , css [ Css.fontSize (Css.em 1.5) ]
     ]
 
 
 logo : Html msg
-logo = 
+logo =
     h1
-        [ css [Css.fontSize (Css.em 3) ] ]
-        [ img [ 
-            css [Css.borderRadius (Css.px 15) ]
-            , css [Css.backgroundColor black ]
-            , css [Css.padding4 (Css.em 0.3) (Css.em 0.3) (Css.em 0.3) (Css.em 0.3) ]
-            , css [Css.marginTop (Css.em -1.1) ]
-            , Html.Styled.Attributes.src ("/logo.png" )
+        [ css [ Css.fontSize (Css.em 3) ] ]
+        [ img
+            [ css [ Css.borderRadius (Css.px 15) ]
+            , css [ Css.backgroundColor black ]
+            , css [ Css.padding4 (Css.em 0.3) (Css.em 0.3) (Css.em 0.3) (Css.em 0.3) ]
+            , css [ Css.marginTop (Css.em -1.1) ]
+            , Html.Styled.Attributes.src "/logo.png"
             , Html.Styled.Attributes.alt "Find your 9Birthdays"
             , Html.Styled.Attributes.title "Find your 9Birthdays"
-            ] []
+            ]
+            []
         ]
 
-subtitle : Html msg
-subtitle = 
-    h2 [ css [Css.marginTop (Css.em -1.8) ] ] [ text "Born on this day?" ]
 
-birthdatePrompt : Html msg
-birthdatePrompt = 
+prompt : Html msg
+prompt =
+    h2 [ css [ Css.marginTop (Css.em -1.8) ] ] [ text "Born on this day?" ]
+
+
+birthdaysTitle : Html msg
+birthdaysTitle =
     h2
-        [ css [Css.marginBottom Css.zero ]
-        , css [Css.marginTop (Css.em 1)]
+        [ css [ Css.marginBottom Css.zero ]
+        , css [ Css.marginTop (Css.em 1) ]
         ]
         [ text "Your next planetary birthdays are:" ]
+
 
 birthdays : Model -> Html Msg
 birthdays model =
     table birthdayTableHeading
         (List.map viewBirthday <| List.sortWith Birthdays.compare model.birthdays)
 
+
+supplementaries : Html Msg
+supplementaries =
+    div
+        [ css [ Css.color textColor ]
+        , css [ Css.paddingTop (Css.em 3) ]
+        ]
+        [ insightMessage
+        , vipHeadings
+        , howToCelebrate
+        ]
+
+
 insightMessage : Html msg
 insightMessage =
     div
-        [ css [Css.marginTop (Css.em 10) ]
-        , css [Css.paddingBottom Css.zero ]
-        , css [Css.marginBottom Css.zero ]
+        [ css [ Css.marginTop (Css.em 10) ]
+        , css [ Css.paddingBottom Css.zero ]
+        , css [ Css.marginBottom Css.zero ]
         ]
         [ p [] [ text "Did you know we have birthdays on each planet in our solar system?" ]
         , p
-            [ css [Css.fontSize (Css.pct 70) ]
-            , css [Css.marginTop (Css.em -1) ]
+            [ css [ Css.fontSize (Css.pct 70) ]
+            , css [ Css.marginTop (Css.em -1) ]
             ]
             [ text "It's true, enter your birthdate above and we'll calcuate your 9 birthdays" ]
         ]
 
+
 vipHeadings : Html Msg
 vipHeadings =
-    div [ css[ Css.paddingTop (Css.em 0.2) ]
+    div
+        [ css [ Css.paddingTop (Css.em 0.2) ]
         ]
         [ span [] [ text "A few examples" ]
-        , ul [ css [Css.fontSize (Css.pct 75) ] ]
+        , ul [ css [ Css.fontSize (Css.pct 75) ] ]
             (List.map viewVIPLink <| List.sortWith compareVIPs vipLinks)
         ]
+
 
 howToCelebrate : Html Msg
 howToCelebrate =
     div []
-    [ p [] [ text "How to celebrate your 9 planetary birthdays" ]
-    , ul [ css [Css.fontSize (Css.pct 60) ] ]
-        (List.map viewCelebration celebrationTexts)
-    ]
+        [ p [] [ text "How to celebrate your 9 planetary birthdays" ]
+        , ul [ css [ Css.fontSize (Css.pct 60) ] ]
+            (List.map viewCelebration celebrationTexts)
+        ]
+
 
 acknowledgements : Html msg
 acknowledgements =
-    div [ 
-        css [Css.fontFamilies ["Arial", "sans-serif" ] ]
+    div
+        [ css [ Css.fontFamilies [ "Arial", "sans-serif" ] ]
         ]
         [ text "A small elm project, hosted by InfinityFree" ]
 
+
+
 {-
-    use button to "hyperlink" out of app
-    true [a] tags reserved for LinkedClicked msgs
-    this avoids parsing types of internal URLs
+   use button to "hyperlink" out of app
+   true [a] tags reserved for LinkedClicked msgs
+   this avoids parsing types of internal URLs
 -}
+
+
 myExperiences : Html Msg
-myExperiences = 
-    div [ css [Css.fontFamilies ["Arial", "sans-serif" ] ]
-    , css [Css.marginTop (Css.em 0.2) ]
-    ]
-    [ button
-        [ Html.Styled.Events.onClick TryingElm
-        , css [ Css.textDecoration Css.underline ]
-        , css [ Css.cursor Css.pointer ]
-        , css [ Css.border Css.zero ]
-        , css [ Css.color (Css.hex "#3894FF") ]
-        , css [ Css.backgroundColor white ]
-        , css [ Css.padding (Css.em 0.6) ]
-        , css [ Css.borderRadius (Css.px 5) ]
+myExperiences =
+    div
+        [ css [ Css.fontFamilies [ "Arial", "sans-serif" ] ]
+        , css [ Css.marginTop (Css.em 0.2) ]
         ]
-        [ text "My experiences trying Elm" ]
-    ]
+        [ button
+            [ Html.Styled.Events.onClick TryingElm
+            , css [ Css.textDecoration Css.underline ]
+            , css [ Css.cursor Css.pointer ]
+            , css [ Css.border Css.zero ]
+            , css [ Css.color (Css.hex "#3894FF") ]
+            , css [ Css.backgroundColor white ]
+            , css [ Css.padding (Css.em 0.6) ]
+            , css [ Css.borderRadius (Css.px 5) ]
+            ]
+            [ text "My experiences trying Elm" ]
+        ]
+
 
 page : Model -> Html Msg
-page model = 
+page model =
     div
         backdrop
         [ logo
-        , subtitle
+        , prompt
         , dateInputs model
-        , birthdatePrompt
+        , birthdaysTitle
         , birthdays model
-        , div
-            [ css [Css.color black]
-            , css [Css.paddingTop (Css.em 3)]]
-            [ insightMessage
-            , vipHeadings
-            , howToCelebrate
-            ]
-        , div footer
-            [ acknowledgements
-            , myExperiences
-            ]
+        , supplementaries
+        , footer
         ]
+
 
 view : Model -> Browser.Document Msg
 view model =
-    let
-        content = page model
-    in
     { title = "9Birthdays"
-    , body = [ Html.Styled.toUnstyled content ]
+    , body = [ Html.Styled.toUnstyled (page model) ]
     }
