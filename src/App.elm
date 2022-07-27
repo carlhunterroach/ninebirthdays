@@ -307,14 +307,6 @@ birthdateFromUrl url =
             fallbackBirthdate
 
 
-smallSpacer : Html msg
-smallSpacer =
-    span
-        [ Html.Styled.Attributes.css [ Css.fontSize (Css.pct 40) ]
-        ]
-        [ text " " ]
-
-
 type WhenIsBirthday
     = Today
     | Future
@@ -349,7 +341,7 @@ smartBirthdayMessage birthday =
     case isBirthdayToday birthday of
         Today ->
             [ span
-                [ Html.Styled.Attributes.css [ Css.fontFamily Css.cursive ] ]
+                [ css [ Css.fontFamily Css.cursive ] ]
                 [ text "Happy Birthday today!" ]
             ]
 
@@ -386,6 +378,11 @@ smartRowStyle birthday =
 
         Future ->
             []
+
+
+spanAt : Float -> String -> Html msg
+spanAt textSizePercentage content =
+    span [ css [ Css.fontSize (Css.pct textSizePercentage) ] ] [ text content ]
 
 
 viewBirthday : PlanetaryBirthday -> Html Msg
@@ -430,10 +427,10 @@ viewBirthday birthday =
                 ]
             ]
             [ span [] [ text formattedAge ]
-            , smallSpacer
-            , span [ css [ Css.fontSize (Css.pct 80) ] ] [ text suffix ]
-            , smallSpacer
-            , span [ css [ Css.fontSize (Css.pct 80) ] ] [ text "old" ]
+            , spanAt 40 " "
+            , spanAt 80 suffix
+            , spanAt 40 " "
+            , spanAt 80 "old"
             ]
         ]
 
@@ -732,7 +729,7 @@ insightMessage : Html msg
 insightMessage =
     div
         [ css
-            [ Css.marginTop (Css.em 10)
+            [ Css.marginTop (Css.em 9)
             , Css.paddingBottom Css.zero
             , Css.marginBottom Css.zero
             ]
