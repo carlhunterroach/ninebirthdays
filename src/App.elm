@@ -8,13 +8,10 @@ import Css
 import Date exposing (Date)
 import FormatNumber
 import FormatNumber.Locales exposing (Decimals(..), usLocale)
---import Html exposing (Attribute, Html, a, button, div, h1, h2, img, li, option, p, select, span, table, td, text, tr, ul)
---import Html.Attributes exposing (alt, href, src, style, title, value)
+import Html.Styled exposing (Attribute, Html, a, button, div, h1, h2, img, li, option, p, select, span, table, td, text, tr, ul)
 import Html.Styled.Attributes
-import Html.Styled.Attributes exposing(alt, css, href, src, title)
-import Html.Styled exposing (Attribute, Html, toUnstyled, a, button, div, h1, h2, img, li, option, p, select, span, table, td, text, tr, ul)
-import Html.Styled.Events exposing (onClick, onInput)
---import Html.Events exposing (onClick, onInput)
+import Html.Styled.Attributes exposing(css)
+import Html.Styled.Events
 import Ordinal
 import Task
 import Time exposing (Month(..))
@@ -518,7 +515,7 @@ dateInputs model =
         [ select
             [ css [ Css.fontSize (Css.em 1.5)]
             , css [Css.borderRadius (Css.em 0.2)]
-            , onInput DayPicked
+            , Html.Styled.Events.onInput DayPicked
             , Html.Styled.Attributes.value (String.fromInt (Date.day model.userBirthdate))
             ]
             (dayOptions model.userBirthdate)
@@ -527,14 +524,14 @@ dateInputs model =
             , css [Css.marginLeft (Css.em 0.3)]
             , css [Css.marginRight (Css.em 0.3)]
             , css [ Css.borderRadius (Css.em 0.2)]
-            , onInput MonthPicked
+            , Html.Styled.Events.onInput MonthPicked
             , Html.Styled.Attributes.value (String.fromInt (Date.monthNumber model.userBirthdate))
             ]
             (List.map monthOptions (List.indexedMap Tuple.pair namesOfMonth))
         , select
             [ css [ Css.fontSize (Css.em 1.5)]
             , css [ Css.borderRadius (Css.em 0.2)]
-            , onInput YearPicked
+            , Html.Styled.Events.onInput YearPicked
             , Html.Styled.Attributes.value (String.fromInt (Date.year model.userBirthdate))
             ]
             (List.map yearOptions (List.range 1 (Date.year model.today)))
@@ -587,7 +584,7 @@ viewVIPLink : ( String, String ) -> Html Msg
 viewVIPLink ( path, name ) =
     li [ css [Css.listStyleType Css.none ] ]
         [ a
-            [ href ("?" ++ path)
+            [ Html.Styled.Attributes.href ("?" ++ path)
             , css [Css.textDecoration Css.none]
             ]
             [ text name ]
@@ -642,9 +639,9 @@ logo =
             , css [Css.backgroundColor black ]
             , css [Css.padding4 (Css.em 0.3) (Css.em 0.3) (Css.em 0.3) (Css.em 0.3) ]
             , css [Css.marginTop (Css.em -1.1) ]
-            , src ("/logo.png" )
-            , alt "Find your 9Birthdays"
-            , title "Find your 9Birthdays"
+            , Html.Styled.Attributes.src ("/logo.png" )
+            , Html.Styled.Attributes.alt "Find your 9Birthdays"
+            , Html.Styled.Attributes.title "Find your 9Birthdays"
             ] []
         ]
 
@@ -715,7 +712,7 @@ myExperiences =
     , css [Css.marginTop (Css.em 0.2) ]
     ]
     [ button
-        [ onClick TryingElm
+        [ Html.Styled.Events.onClick TryingElm
         , css [ Css.textDecoration Css.underline ]
         , css [ Css.cursor Css.pointer ]
         , css [ Css.border Css.zero ]
