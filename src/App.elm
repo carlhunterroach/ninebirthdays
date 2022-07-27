@@ -4,12 +4,17 @@ import Birthdays exposing (Birthdate, PlanetaryBirthday, Today)
 import Browser
 import Browser.Dom as Dom
 import Browser.Navigation as Nav
+import Css
 import Date exposing (Date)
 import FormatNumber
 import FormatNumber.Locales exposing (Decimals(..), usLocale)
-import Html exposing (Attribute, Html, a, button, div, h1, h2, img, li, option, p, select, span, table, td, text, tr, ul)
-import Html.Attributes exposing (alt, href, src, style, title, value)
-import Html.Events exposing (onClick, onInput)
+--import Html exposing (Attribute, Html, a, button, div, h1, h2, img, li, option, p, select, span, table, td, text, tr, ul)
+--import Html.Attributes exposing (alt, href, src, style, title, value)
+import Html.Styled.Attributes
+import Html.Styled.Attributes exposing(alt, css, href, src, title)
+import Html.Styled exposing (Attribute, Html, toUnstyled, a, button, div, h1, h2, img, li, option, p, select, span, table, td, text, tr, ul)
+import Html.Styled.Events exposing (onClick, onInput)
+--import Html.Events exposing (onClick, onInput)
 import Ordinal
 import Task
 import Time exposing (Month(..))
@@ -308,7 +313,10 @@ birthdateFromUrl url =
 
 smallSpacer : Html msg
 smallSpacer =
-    span [ style "font-size" "40%" ] [ text " " ]
+    span [ 
+         Html.Styled.Attributes.css [ Css.fontSize (Css.pct 40) ]
+         ]
+        [ text " " ]
 
 
 type WhenIsBirthday
@@ -345,7 +353,7 @@ smartBirthdayMessage birthday =
     case isBirthdayToday birthday of
         Today ->
             [ span
-                [ style "font-family" "cursive" ]
+                [ Html.Styled.Attributes.css [ Css.fontFamily Css.cursive ] ]
                 [ text "Happy Birthday today!" ]
             ]
 
@@ -373,13 +381,14 @@ smartRowStyle : PlanetaryBirthday -> List (Attribute msg)
 smartRowStyle birthday =
     case isBirthdayToday birthday of
         Today ->
-            [ style "color" "yellow"
-            , style "font-family" "cursive"
-            , style "font-size" "105%"
+            [
+              css [ Css.color white ]
+            , css [ Css.fontFamily Css.cursive ]
+            , css [ Css.fontSize (Css.pct 105) ]
             ]
 
         Future ->
-            [ style "" "" ]
+            [ css [] ]
 
 
 viewBirthday : PlanetaryBirthday -> Html Msg
@@ -404,24 +413,24 @@ viewBirthday birthday =
     in
     tr (smartRowStyle birthday)
         [ td
-            [ style "text-align" "left"
-            , style "padding-left" "0.5em"
+            [ css [Css.textAlign Css.left]
+            , css [Css.paddingLeft (Css.em 0.5) ]
             ]
             [ text birthday.planetName ]
         , td
-            [ style "text-align" "center"
-            , style "padding-right" "0.1em"
+            [ css [Css.textAlign Css.center]
+            , css [Css.paddingRight (Css.em 0.1)]
             ]
             (smartBirthdayMessage birthday)
         , td
-            [ style "padding-left" "0.5em"
-            , style "padding-right" "0.5em"
+            [ css [Css.paddingLeft (Css.em 0.5)]
+            , css [Css.paddingRight (Css.em 0.5)]
             ]
             [ span [] [ text formattedAge ]
             , smallSpacer
-            , span [ style "font-size" "80%" ] [ text suffix ]
+            , span [ css [Css.fontSize (Css.pct 80)] ] [ text suffix ]
             , smallSpacer
-            , span [ style "font-size" "80%" ] [ text "old" ]
+            , span [ css [Css.fontSize (Css.pct 80)] ] [ text "old" ]
             ]
         ]
 
@@ -432,32 +441,32 @@ viewBirthday birthday =
 
 birthdayTableHeading : List (Attribute msg)
 birthdayTableHeading =
-    [ style "text-align" "center"
-    , style "background-color" "rgba(50,50,50,.7)"
-    , style "border-radius" "15px"
-    , style "margin-left" "auto"
-    , style "margin-right" "auto"
-    , style "margin-top" "1.8em"
+    [ css [ Css.textAlign Css.center ]
+    , css [ Css.backgroundColor (Css.rgba 50 50 50 0.7 ) ]
+    , css [ Css.borderRadius (Css.px 15)]
+    , css [ Css.marginLeft Css.auto]
+    , css [ Css.marginRight Css.auto]
+    , css [Css.marginTop (Css.em 1.8)]
     ]
 
 
 footer : List (Attribute msg)
 footer =
-    [ style "font-size" "60%"
-    , style "font-family" "Arial, sans-serif"
-    , style "color" "black"
-    , style "margin" "5em 5em 5em 5em"
+    [ css [ Css.fontSize (Css.pct 60)]
+    , css [ Css.fontFamilies ["Arial", "sans-serif"] ]
+    , css [ Css.color black ]
+    , css [ Css.margin4 (Css.em 5) (Css.em 5) (Css.em 5) (Css.em 5) ]
     ]
 
 
 monthOptions : ( Int, String ) -> Html Msg
 monthOptions ( monthZeroIndexed, string ) =
-    option [ value (String.fromInt (monthZeroIndexed + 1)) ] [ text string ]
+    option [ Html.Styled.Attributes.value (String.fromInt (monthZeroIndexed + 1)) ] [ text string ]
 
 
 dayOption : Int -> Html msg
 dayOption day =
-    option [ value (String.fromInt day) ] [ text (String.fromInt day) ]
+    option [ Html.Styled.Attributes.value (String.fromInt day) ] [ text (String.fromInt day) ]
 
 
 dayOptions : Birthdate -> List (Html msg)
@@ -484,38 +493,49 @@ dayOptions birthdate =
 
 yearOptions : Int -> Html msg
 yearOptions year =
-    option [ value (String.fromInt year) ] [ text (String.fromInt year) ]
+    option [ Html.Styled.Attributes.value (String.fromInt year) ] [ text (String.fromInt year) ]
 
 
 namesOfMonth : List String
 namesOfMonth =
-    [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ]
+    [ "January"
+    , "February"
+    , "March"
+    , "April"
+    , "May"
+    , "June"
+    , "July"
+    , "August"
+    , "September"
+    , "October"
+    , "November"
+    , "December" ]
 
 
 dateInputs : Model -> Html Msg
 dateInputs model =
     div []
         [ select
-            [ style "font-size" "1.5em"
-            , style "border-radius" ".2em"
+            [ css [ Css.fontSize (Css.em 1.5)]
+            , css [Css.borderRadius (Css.em 0.2)]
             , onInput DayPicked
-            , value (String.fromInt (Date.day model.userBirthdate))
+            , Html.Styled.Attributes.value (String.fromInt (Date.day model.userBirthdate))
             ]
             (dayOptions model.userBirthdate)
         , select
-            [ style "font-size" "1.5em"
-            , style "margin-left" ".3em"
-            , style "margin-right" ".3em"
-            , style "border-radius" ".2em"
+            [ css [ Css.fontSize (Css.em 1.5)]
+            , css [Css.marginLeft (Css.em 0.3)]
+            , css [Css.marginRight (Css.em 0.3)]
+            , css [ Css.borderRadius (Css.em 0.2)]
             , onInput MonthPicked
-            , value (String.fromInt (Date.monthNumber model.userBirthdate))
+            , Html.Styled.Attributes.value (String.fromInt (Date.monthNumber model.userBirthdate))
             ]
             (List.map monthOptions (List.indexedMap Tuple.pair namesOfMonth))
         , select
-            [ style "font-size" "1.5em"
-            , style "border-radius" ".2em"
+            [ css [ Css.fontSize (Css.em 1.5)]
+            , css [ Css.borderRadius (Css.em 0.2)]
             , onInput YearPicked
-            , value (String.fromInt (Date.year model.userBirthdate))
+            , Html.Styled.Attributes.value (String.fromInt (Date.year model.userBirthdate))
             ]
             (List.map yearOptions (List.range 1 (Date.year model.today)))
         ]
@@ -565,10 +585,10 @@ compareVIPs a b =
 
 viewVIPLink : ( String, String ) -> Html Msg
 viewVIPLink ( path, name ) =
-    li [ style "list-style-type" "none" ]
+    li [ css [Css.listStyleType Css.none ] ]
         [ a
             [ href ("?" ++ path)
-            , style "text-decoration" "none"
+            , css [Css.textDecoration Css.none]
             ]
             [ text name ]
         ]
@@ -590,100 +610,150 @@ celebrationTexts =
 
 viewCelebration : String -> Html Msg
 viewCelebration suggestion =
-    li [ style "list-style-type" "none" ] [ text suggestion ]
+    li [ css [Css.listStyleType Css.none ] ] [ text suggestion ]
 
+black : Css.Color
+black =
+    Css.rgb 0 0 0
+
+white : Css.Color
+white = 
+    Css.rgb 255 255 255
+
+backdrop : List (Attribute msg)
+backdrop = 
+    [ css [Css.backgroundImage (Css.url "/solar-system.png") ]
+    , css [Css.backgroundRepeat Css.noRepeat ]
+    , css [Css.width (Css.px 1000) ]
+    , css [Css.color white ]
+    , css [Css.textAlign Css.center ]
+    , css [Css.margin4 (Css.em 0.5) (Css.em 0.5) (Css.em 0.5) (Css.em 0.5) ]
+    , css [Css.fontFamilies ["Arial", "sans-serif" ] ]
+    , css [Css.fontSize (Css.em 1.5) ]
+    ]
+
+
+logo : Html msg
+logo = 
+    h1
+        [ css [Css.fontSize (Css.em 3) ] ]
+        [ img [ 
+            css [Css.borderRadius (Css.px 15) ]
+            , css [Css.backgroundColor black ]
+            , css [Css.padding4 (Css.em 0.3) (Css.em 0.3) (Css.em 0.3) (Css.em 0.3) ]
+            , css [Css.marginTop (Css.em -1.1) ]
+            , src ("/logo.png" )
+            , alt "Find your 9Birthdays"
+            , title "Find your 9Birthdays"
+            ] []
+        ]
+
+subtitle : Html msg
+subtitle = 
+    h2 [ css [Css.marginTop (Css.em -1.8) ] ] [ text "Born on this day?" ]
+
+birthdatePrompt : Html msg
+birthdatePrompt = 
+    h2
+        [ css [Css.marginBottom Css.zero ]
+        , css [Css.marginTop (Css.em 1)]
+        ]
+        [ text "Your next planetary birthdays are:" ]
+
+birthdays : Model -> Html Msg
+birthdays model =
+    table birthdayTableHeading
+        (List.map viewBirthday <| List.sortWith Birthdays.compare model.birthdays)
+
+insightMessage : Html msg
+insightMessage =
+    div
+        [ css [Css.marginTop (Css.em 10) ]
+        , css [Css.paddingBottom Css.zero ]
+        , css [Css.marginBottom Css.zero ]
+        ]
+        [ p [] [ text "Did you know we have birthdays on each planet in our solar system?" ]
+        , p
+            [ css [Css.fontSize (Css.pct 70) ]
+            , css [Css.marginTop (Css.em -1) ]
+            ]
+            [ text "It's true, enter your birthdate above and we'll calcuate your 9 birthdays" ]
+        ]
+
+vipHeadings : Html Msg
+vipHeadings =
+    div [ css[ Css.paddingTop (Css.em 0.2) ]
+        ]
+        [ span [] [ text "A few examples" ]
+        , ul [ css [Css.fontSize (Css.pct 75) ] ]
+            (List.map viewVIPLink <| List.sortWith compareVIPs vipLinks)
+        ]
+
+howToCelebrate : Html Msg
+howToCelebrate =
+    div []
+    [ p [] [ text "How to celebrate your 9 planetary birthdays" ]
+    , ul [ css [Css.fontSize (Css.pct 60) ] ]
+        (List.map viewCelebration celebrationTexts)
+    ]
+
+acknowledgements : Html msg
+acknowledgements =
+    div [ 
+        css [Css.fontFamilies ["Arial", "sans-serif" ] ]
+        ]
+        [ text "A small elm project, hosted by InfinityFree" ]
+
+{-
+    use button to "hyperlink" out of app
+    true [a] tags reserved for LinkedClicked msgs
+    this avoids parsing types of internal URLs
+-}
+myExperiences : Html Msg
+myExperiences = 
+    div [ css [Css.fontFamilies ["Arial", "sans-serif" ] ]
+    , css [Css.marginTop (Css.em 0.2) ]
+    ]
+    [ button
+        [ onClick TryingElm
+        , css [ Css.textDecoration Css.underline ]
+        , css [ Css.cursor Css.pointer ]
+        , css [ Css.border Css.zero ]
+        , css [ Css.color (Css.hex "#3894FF") ]
+        , css [ Css.backgroundColor white ]
+        , css [ Css.padding (Css.em 0.6) ]
+        , css [ Css.borderRadius (Css.px 5) ]
+        ]
+        [ text "My experiences trying Elm" ]
+    ]
+
+page : Model -> Html Msg
+page model = 
+    div
+        backdrop
+        [ logo
+        , subtitle
+        , dateInputs model
+        , birthdatePrompt
+        , birthdays model
+        , div
+            [ css [Css.color black]
+            , css [Css.paddingTop (Css.em 3)]]
+            [ insightMessage
+            , vipHeadings
+            , howToCelebrate
+            ]
+        , div footer
+            [ acknowledgements
+            , myExperiences
+            ]
+        ]
 
 view : Model -> Browser.Document Msg
 view model =
+    let
+        content = page model
+    in
     { title = "9Birthdays"
-    , body =
-        [ div
-            [ style "background-image" "url(/solar-system.png)"
-            , style "background-repeat" "no-repeat"
-            , style "width" "1000px"
-            , style "color" "white"
-            , style "text-align" "center"
-            , style "background-color" "dark-gray"
-            , style "margin" ".5em .5em .5em .5em"
-            , style "font-family" "Arial, sans-serif"
-            , style "font-size" "1.5em"
-            ]
-            [ h1
-                [ style "font-size" "3em"
-                ]
-                [ img
-                    [ style "border-radius" "15px"
-                    , style "background-color" "black"
-                    , style "padding" ".3em .3em .3em .3em"
-                    , style "margin-top" "-1.1em"
-                    , src "/logo.png"
-                    , alt "Find your 9Birthdays"
-                    , title "Find your 9Birthdays"
-                    ]
-                    []
-                ]
-            , h2 [ style "margin-top" "-1.8em" ] [ text "Born on this day?" ]
-            , dateInputs model
-            , h2
-                [ style "margin-bottom" "0"
-                , style "margin-top" "1em"
-                ]
-                [ text "Your next planetary birthdays are:" ]
-            , table birthdayTableHeading
-                (List.map viewBirthday <| List.sortWith Birthdays.compare model.birthdays)
-            , div
-                [ style "color" "black"
-                , style "padding-top" "3em"
-                ]
-                [ div
-                    [ style "margin-top" "10em"
-                    , style "padding-bottom" "0"
-                    , style "margin-bottom" "0"
-                    ]
-                    [ p [] [ text "Did you know we have birthdays on each planet in our solar system?" ]
-                    , p
-                        [ style "font-size" "70%"
-                        , style "margin-top" "-1em"
-                        ]
-                        [ text "It's true, enter your birthdate above and we'll calcuate your 9 birthdays" ]
-                    ]
-                , div [ style "padding-top" "0.2em" ]
-                    [ span [] [ text "A few examples" ]
-                    , ul [ style "font-size" "75%" ]
-                        (List.map viewVIPLink <| List.sortWith compareVIPs vipLinks)
-                    ]
-                , div []
-                    [ p [] [ text "How to celebrate your 9 planetary birthdays" ]
-                    , ul [ style "font-size" "60%" ]
-                        (List.map viewCelebration celebrationTexts)
-                    ]
-                ]
-            , div footer
-                [ div [ style "font-family" "Arial, sans-serif" ]
-                    [ text "A small elm project, hosted by InfinityFree" ]
-
-                {-
-                   use button to "hyperlink" out of app
-                   true [a] tags reserved for LinkedClicked msgs
-                   this avoids parsing types of internal URLs
-                -}
-                , div
-                    [ style "font-family" "Arial, sans-serif"
-                    , style "margin-top" "0.2em"
-                    ]
-                    [ button
-                        [ onClick TryingElm
-                        , style "text-decoration" "underline"
-                        , style "cursor" "pointer"
-                        , style "border" "none"
-                        , style "color" "#3894FF"
-                        , style "background-color" "white"
-                        , style "padding" "0.6em"
-                        , style "border-radius" "5px"
-                        ]
-                        [ text "My experiences trying Elm" ]
-                    ]
-                ]
-            ]
-        ]
+    , body = [ Html.Styled.toUnstyled content ]
     }

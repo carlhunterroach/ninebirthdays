@@ -47,7 +47,7 @@ simple =
             \_ ->
                 let
                     birthdate =
-                        Date.fromCalendarDate 1965 Sep 16
+                        Date.fromCalendarDate 2000 Feb 28
 
                     today =
                         Date.fromCalendarDate 2022 May 1
@@ -58,10 +58,10 @@ simple =
             \_ ->
                 let
                     birthdate =
-                        Date.fromCalendarDate 1965 Sep 16
+                        Date.fromCalendarDate 2000 Mar 20
 
                     today =
-                        Date.fromCalendarDate 2022 May 1
+                        Date.fromCalendarDate 2022 Jul 27
 
                     days =
                         Birthdays.calculateBirthdays birthdate today
@@ -80,10 +80,10 @@ complex =
             \_ ->
                 let
                     birthdate =
-                        Date.fromCalendarDate 1965 Sep 16
+                        Date.fromCalendarDate 2000 Feb 1
 
                     today =
-                        Date.fromCalendarDate 2022 May 1
+                        Date.fromCalendarDate 2022 Jul 27
 
                     days =
                         Birthdays.calculateBirthdays birthdate today
@@ -92,15 +92,15 @@ complex =
                         Maybe.withDefault badPlanet
                             ( List.head ( List.filter is_earth days ) )
                 in
-                day.age |> Expect.equal 57
+                day.age |> Expect.equal 23
         , test "Earth birthday is same day of month/year?" <|
             \_ ->
                 let
                     birthdate =
-                        Date.fromCalendarDate 1865 Sep 16
+                        Date.fromCalendarDate 1805 Jan 31
 
                     today =
-                        Date.fromCalendarDate 2022 May 1
+                        Date.fromCalendarDate 2022 Jul 27
 
                     days =
                         Birthdays.calculateBirthdays birthdate today
@@ -110,23 +110,7 @@ complex =
                             badPlanet
                             (List.head (List.filter is_earth days))
                 in
-                day.earthDate |> Expect.equal (Date.fromCalendarDate 2022 Sep 16)
-        , test "Test Date diff" <|
-            \_ ->
-                let
-                    birthdate =
-                        Date.fromCalendarDate 1865 Sep 16
-
-                    today =
-                        Date.fromCalendarDate 2022 May 5
-
-                    years =
-                        Date.diff Date.Years birthdate today
-
-                    birthday =
-                        Date.add Date.Years (years + 1) birthdate
-                in
-                birthday |> Expect.equal (Date.fromCalendarDate 2022 Sep 16)
+                day.earthDate |> Expect.equal (Date.fromCalendarDate 2023 Jan 31)
         , test "check a birthdate on Jupiter" <|
             \_ ->
                 let
