@@ -16,6 +16,7 @@ import Task
 import Time exposing (Month(..))
 import Tuple
 import Url
+import Char exposing (isAlpha)
 
 
 type alias Year =
@@ -593,7 +594,7 @@ vipLinks =
 
 compareVIPs : ( String, String ) -> ( String, String ) -> Order
 compareVIPs a b =
-    if Tuple.second a < Tuple.second b then
+    if String.filter isAlpha (Tuple.second a) < String.filter isAlpha (Tuple.second b) then
         LT
 
     else
