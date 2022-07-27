@@ -385,7 +385,7 @@ smartRowStyle birthday =
             ]
 
         Future ->
-            [ css [] ]
+            []
 
 
 viewBirthday : PlanetaryBirthday -> Html Msg
@@ -460,7 +460,6 @@ footer =
     div
         [ css
             [ Css.fontSize (Css.pct 60)
-            , Css.fontFamilies [ "Arial", "sans-serif" ]
             , Css.color textColor
             , Css.margin4 (Css.em 5) (Css.em 5) (Css.em 5) (Css.em 5)
             ]
@@ -524,34 +523,37 @@ namesOfMonth =
     ]
 
 
+selectDateCss : List Css.Style
+selectDateCss =
+    [ Css.fontSize (Css.em 1.5)
+    , Css.borderRadius (Css.em 0.2)
+    ]
+
+
 dateInputs : Model -> Html Msg
 dateInputs model =
     div []
         [ select
             [ css
-                [ Css.fontSize (Css.em 1.5)
-                , Css.borderRadius (Css.em 0.2)
-                ]
+                selectDateCss
             , Html.Styled.Events.onInput DayPicked
             , Html.Styled.Attributes.value (String.fromInt (Date.day model.userBirthdate))
             ]
             (dayOptions model.userBirthdate)
         , select
             [ css
-                [ Css.fontSize (Css.em 1.5)
-                , Css.borderRadius (Css.em 0.2)
-                , Css.marginLeft (Css.em 0.3)
-                , Css.marginRight (Css.em 0.3)
-                ]
+                (selectDateCss
+                    ++ [ Css.marginLeft (Css.em 0.3)
+                       , Css.marginRight (Css.em 0.3)
+                       ]
+                )
             , Html.Styled.Events.onInput MonthPicked
             , Html.Styled.Attributes.value (String.fromInt (Date.monthNumber model.userBirthdate))
             ]
             (List.map monthOptions (List.indexedMap Tuple.pair namesOfMonth))
         , select
             [ css
-                [ Css.fontSize (Css.em 1.5)
-                , Css.borderRadius (Css.em 0.2)
-                ]
+                selectDateCss
             , Html.Styled.Events.onInput YearPicked
             , Html.Styled.Attributes.value (String.fromInt (Date.year model.userBirthdate))
             ]
@@ -649,6 +651,11 @@ textColor =
 backdropTextColor : Css.Color
 backdropTextColor =
     white
+
+
+hyperlinkTextColor : Css.Color
+hyperlinkTextColor =
+    Css.hex "#3894FF"
 
 
 backdrop : List (Attribute msg)
@@ -764,8 +771,7 @@ howToCelebrate =
 acknowledgements : Html msg
 acknowledgements =
     div
-        [ css [ Css.fontFamilies [ "Arial", "sans-serif" ] ]
-        ]
+        []
         [ text "A small elm project, hosted by InfinityFree" ]
 
 
@@ -781,8 +787,7 @@ myExperiences : Html Msg
 myExperiences =
     div
         [ css
-            [ Css.fontFamilies [ "Arial", "sans-serif" ]
-            , Css.marginTop (Css.em 0.2)
+            [ Css.marginTop (Css.em 0.2)
             ]
         ]
         [ button
@@ -791,7 +796,7 @@ myExperiences =
                 [ Css.textDecoration Css.underline
                 , Css.cursor Css.pointer
                 , Css.border Css.zero
-                , Css.color (Css.hex "#3894FF")
+                , Css.color hyperlinkTextColor
                 , Css.backgroundColor white
                 , Css.padding (Css.em 0.6)
                 , Css.borderRadius (Css.px 5)
