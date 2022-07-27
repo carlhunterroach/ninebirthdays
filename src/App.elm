@@ -377,9 +377,11 @@ smartRowStyle : PlanetaryBirthday -> List (Attribute msg)
 smartRowStyle birthday =
     case isBirthdayToday birthday of
         Today ->
-            [ css [ Css.color backdropTextColor ]
-            , css [ Css.fontFamily Css.cursive ]
-            , css [ Css.fontSize (Css.pct 105) ]
+            [ css
+                [ Css.color backdropTextColor
+                , Css.fontFamily Css.cursive
+                , Css.fontSize (Css.pct 105)
+                ]
             ]
 
         Future ->
@@ -408,18 +410,24 @@ viewBirthday birthday =
     in
     tr (smartRowStyle birthday)
         [ td
-            [ css [ Css.textAlign Css.left ]
-            , css [ Css.paddingLeft (Css.em 0.5) ]
+            [ css
+                [ Css.textAlign Css.left
+                , Css.paddingLeft (Css.em 0.5)
+                ]
             ]
             [ text birthday.planetName ]
         , td
-            [ css [ Css.textAlign Css.center ]
-            , css [ Css.paddingRight (Css.em 0.1) ]
+            [ css
+                [ Css.textAlign Css.center
+                , Css.paddingRight (Css.em 0.1)
+                ]
             ]
             (smartBirthdayMessage birthday)
         , td
-            [ css [ Css.paddingLeft (Css.em 0.5) ]
-            , css [ Css.paddingRight (Css.em 0.5) ]
+            [ css
+                [ Css.paddingLeft (Css.em 0.5)
+                , Css.paddingRight (Css.em 0.5)
+                ]
             ]
             [ span [] [ text formattedAge ]
             , smallSpacer
@@ -436,22 +444,26 @@ viewBirthday birthday =
 
 birthdayTableHeading : List (Attribute msg)
 birthdayTableHeading =
-    [ css [ Css.textAlign Css.center ]
-    , css [ Css.backgroundColor (Css.rgba 50 50 50 0.7) ]
-    , css [ Css.borderRadius (Css.px 15) ]
-    , css [ Css.marginLeft Css.auto ]
-    , css [ Css.marginRight Css.auto ]
-    , css [ Css.marginTop (Css.em 1.8) ]
+    [ css
+        [ Css.textAlign Css.center
+        , Css.backgroundColor (Css.rgba 50 50 50 0.7)
+        , Css.borderRadius (Css.px 15)
+        , Css.marginLeft Css.auto
+        , Css.marginRight Css.auto
+        , Css.marginTop (Css.em 1.8)
+        ]
     ]
 
 
 footer : Html Msg
 footer =
     div
-        [ css [ Css.fontSize (Css.pct 60) ]
-        , css [ Css.fontFamilies [ "Arial", "sans-serif" ] ]
-        , css [ Css.color textColor ]
-        , css [ Css.margin4 (Css.em 5) (Css.em 5) (Css.em 5) (Css.em 5) ]
+        [ css
+            [ Css.fontSize (Css.pct 60)
+            , Css.fontFamilies [ "Arial", "sans-serif" ]
+            , Css.color textColor
+            , Css.margin4 (Css.em 5) (Css.em 5) (Css.em 5) (Css.em 5)
+            ]
         ]
         [ acknowledgements
         , myExperiences
@@ -516,24 +528,30 @@ dateInputs : Model -> Html Msg
 dateInputs model =
     div []
         [ select
-            [ css [ Css.fontSize (Css.em 1.5) ]
-            , css [ Css.borderRadius (Css.em 0.2) ]
+            [ css
+                [ Css.fontSize (Css.em 1.5)
+                , Css.borderRadius (Css.em 0.2)
+                ]
             , Html.Styled.Events.onInput DayPicked
             , Html.Styled.Attributes.value (String.fromInt (Date.day model.userBirthdate))
             ]
             (dayOptions model.userBirthdate)
         , select
-            [ css [ Css.fontSize (Css.em 1.5) ]
-            , css [ Css.marginLeft (Css.em 0.3) ]
-            , css [ Css.marginRight (Css.em 0.3) ]
-            , css [ Css.borderRadius (Css.em 0.2) ]
+            [ css
+                [ Css.fontSize (Css.em 1.5)
+                , Css.borderRadius (Css.em 0.2)
+                , Css.marginLeft (Css.em 0.3)
+                , Css.marginRight (Css.em 0.3)
+                ]
             , Html.Styled.Events.onInput MonthPicked
             , Html.Styled.Attributes.value (String.fromInt (Date.monthNumber model.userBirthdate))
             ]
             (List.map monthOptions (List.indexedMap Tuple.pair namesOfMonth))
         , select
-            [ css [ Css.fontSize (Css.em 1.5) ]
-            , css [ Css.borderRadius (Css.em 0.2) ]
+            [ css
+                [ Css.fontSize (Css.em 1.5)
+                , Css.borderRadius (Css.em 0.2)
+                ]
             , Html.Styled.Events.onInput YearPicked
             , Html.Styled.Attributes.value (String.fromInt (Date.year model.userBirthdate))
             ]
@@ -635,14 +653,16 @@ backdropTextColor =
 
 backdrop : List (Attribute msg)
 backdrop =
-    [ css [ Css.backgroundImage (Css.url "/solar-system.png") ]
-    , css [ Css.backgroundRepeat Css.noRepeat ]
-    , css [ Css.width (Css.px 1000) ]
-    , css [ Css.color backdropTextColor ]
-    , css [ Css.textAlign Css.center ]
-    , css [ Css.margin4 (Css.em 0.5) (Css.em 0.5) (Css.em 0.5) (Css.em 0.5) ]
-    , css [ Css.fontFamilies [ "Arial", "sans-serif" ] ]
-    , css [ Css.fontSize (Css.em 1.5) ]
+    [ css
+        [ Css.backgroundImage (Css.url "/solar-system.png")
+        , Css.backgroundRepeat Css.noRepeat
+        , Css.width (Css.px 1000)
+        , Css.color backdropTextColor
+        , Css.textAlign Css.center
+        , Css.margin4 (Css.em 0.5) (Css.em 0.5) (Css.em 0.5) (Css.em 0.5)
+        , Css.fontFamilies [ "Arial", "sans-serif" ]
+        , Css.fontSize (Css.em 1.5)
+        ]
     ]
 
 
@@ -651,10 +671,12 @@ logo =
     h1
         [ css [ Css.fontSize (Css.em 3) ] ]
         [ img
-            [ css [ Css.borderRadius (Css.px 15) ]
-            , css [ Css.backgroundColor black ]
-            , css [ Css.padding4 (Css.em 0.3) (Css.em 0.3) (Css.em 0.3) (Css.em 0.3) ]
-            , css [ Css.marginTop (Css.em -1.1) ]
+            [ css
+                [ Css.borderRadius (Css.px 15)
+                , Css.backgroundColor black
+                , Css.padding4 (Css.em 0.3) (Css.em 0.3) (Css.em 0.3) (Css.em 0.3)
+                , Css.marginTop (Css.em -1.1)
+                ]
             , Html.Styled.Attributes.src "/logo.png"
             , Html.Styled.Attributes.alt "Find your 9Birthdays"
             , Html.Styled.Attributes.title "Find your 9Birthdays"
@@ -671,8 +693,10 @@ prompt =
 birthdaysTitle : Html msg
 birthdaysTitle =
     h2
-        [ css [ Css.marginBottom Css.zero ]
-        , css [ Css.marginTop (Css.em 1) ]
+        [ css
+            [ Css.marginBottom Css.zero
+            , Css.marginTop (Css.em 1)
+            ]
         ]
         [ text "Your next planetary birthdays are:" ]
 
@@ -686,8 +710,10 @@ birthdays model =
 supplementaries : Html Msg
 supplementaries =
     div
-        [ css [ Css.color textColor ]
-        , css [ Css.paddingTop (Css.em 3) ]
+        [ css
+            [ Css.color textColor
+            , Css.paddingTop (Css.em 3)
+            ]
         ]
         [ insightMessage
         , vipHeadings
@@ -698,14 +724,18 @@ supplementaries =
 insightMessage : Html msg
 insightMessage =
     div
-        [ css [ Css.marginTop (Css.em 10) ]
-        , css [ Css.paddingBottom Css.zero ]
-        , css [ Css.marginBottom Css.zero ]
+        [ css
+            [ Css.marginTop (Css.em 10)
+            , Css.paddingBottom Css.zero
+            , Css.marginBottom Css.zero
+            ]
         ]
         [ p [] [ text "Did you know we have birthdays on each planet in our solar system?" ]
         , p
-            [ css [ Css.fontSize (Css.pct 70) ]
-            , css [ Css.marginTop (Css.em -1) ]
+            [ css
+                [ Css.fontSize (Css.pct 70)
+                , Css.marginTop (Css.em -1)
+                ]
             ]
             [ text "It's true, enter your birthdate above and we'll calcuate your 9 birthdays" ]
         ]
@@ -750,18 +780,22 @@ acknowledgements =
 myExperiences : Html Msg
 myExperiences =
     div
-        [ css [ Css.fontFamilies [ "Arial", "sans-serif" ] ]
-        , css [ Css.marginTop (Css.em 0.2) ]
+        [ css
+            [ Css.fontFamilies [ "Arial", "sans-serif" ]
+            , Css.marginTop (Css.em 0.2)
+            ]
         ]
         [ button
             [ Html.Styled.Events.onClick TryingElm
-            , css [ Css.textDecoration Css.underline ]
-            , css [ Css.cursor Css.pointer ]
-            , css [ Css.border Css.zero ]
-            , css [ Css.color (Css.hex "#3894FF") ]
-            , css [ Css.backgroundColor white ]
-            , css [ Css.padding (Css.em 0.6) ]
-            , css [ Css.borderRadius (Css.px 5) ]
+            , css
+                [ Css.textDecoration Css.underline
+                , Css.cursor Css.pointer
+                , Css.border Css.zero
+                , Css.color (Css.hex "#3894FF")
+                , Css.backgroundColor white
+                , Css.padding (Css.em 0.6)
+                , Css.borderRadius (Css.px 5)
+                ]
             ]
             [ text "My experiences trying Elm" ]
         ]
