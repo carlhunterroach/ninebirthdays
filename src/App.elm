@@ -380,9 +380,18 @@ smartRowStyle birthday =
             []
 
 
-spanAt : Float -> String -> Html msg
-spanAt textSizePercentage content =
-    span [ css [ Css.fontSize (Css.pct textSizePercentage) ] ] [ text content ]
+spanAtPercentage : Float -> String -> Html msg
+spanAtPercentage percentage content =
+    span [ css [ Css.fontSize (Css.pct percentage) ] ] [ text content ]
+
+
+commaSeparatedNumber : Int -> String
+commaSeparatedNumber number =
+    FormatNumber.format
+        { usLocale
+            | decimals = Exact 0
+        }
+        (toFloat number)
 
 
 viewBirthday : PlanetaryBirthday -> Html Msg
@@ -390,20 +399,6 @@ viewBirthday birthday =
     let
         ageSmart =
             smartAge birthday
-
-        suffix =
-            if ageSmart == 1 then
-                " yr"
-
-            else
-                " yrs"
-
-        formattedAge =
-            FormatNumber.format
-                { usLocale
-                    | decimals = Exact 0
-                }
-                (toFloat ageSmart)
     in
     tr (smartRowStyle birthday)
         [ td
@@ -426,11 +421,16 @@ viewBirthday birthday =
                 , Css.paddingRight (Css.em 0.5)
                 ]
             ]
-            [ span [] [ text formattedAge ]
-            , spanAt 40 " "
-            , spanAt 80 suffix
-            , spanAt 40 " "
-            , spanAt 80 "old"
+            [ span [] [ text (commaSeparatedNumber ageSmart) ]
+            , spanAtPercentage 40 " "
+            , spanAtPercentage 80 <|
+                if ageSmart == 1 then
+                    " yr"
+
+                else
+                    " yrs"
+            , spanAtPercentage 40 " "
+            , spanAtPercentage 80 "old"
             ]
         ]
 
