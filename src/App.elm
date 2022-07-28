@@ -4,11 +4,32 @@ import Birthdays exposing (Birthdate, PlanetaryBirthday, Today)
 import Browser
 import Browser.Dom as Dom
 import Browser.Navigation as Nav
+import Char exposing (isAlpha)
 import Css
 import Date exposing (Date)
 import FormatNumber
 import FormatNumber.Locales exposing (Decimals(..), usLocale)
-import Html.Styled exposing (Attribute, Html, a, button, div, h1, h2, img, li, option, p, select, span, table, td, text, tr, ul)
+import Html.Styled
+    exposing
+        ( Attribute
+        , Html
+        , a
+        , button
+        , div
+        , h1
+        , h2
+        , img
+        , li
+        , option
+        , p
+        , select
+        , span
+        , table
+        , td
+        , text
+        , tr
+        , ul
+        )
 import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events
 import Ordinal
@@ -16,7 +37,6 @@ import Task
 import Time exposing (Month(..))
 import Tuple
 import Url
-import Char exposing (isAlpha)
 
 
 type alias Year =
@@ -646,6 +666,11 @@ textColor =
     black
 
 
+backgroundColor : Css.Color
+backgroundColor =
+    white
+
+
 backdropTextColor : Css.Color
 backdropTextColor =
     white
@@ -671,17 +696,21 @@ backdrop =
     ]
 
 
+logoBorder : List Css.Style
+logoBorder =
+    [ Css.borderRadius (Css.px 15)
+    , Css.backgroundColor black
+    , Css.padding4 (Css.em 0.3) (Css.em 0.3) (Css.em 0.3) (Css.em 0.3)
+    , Css.marginTop (Css.em -1.1)
+    ]
+
+
 logo : Html msg
 logo =
     h1
         [ css [ Css.fontSize (Css.em 3) ] ]
         [ img
-            [ css
-                [ Css.borderRadius (Css.px 15)
-                , Css.backgroundColor black
-                , Css.padding4 (Css.em 0.3) (Css.em 0.3) (Css.em 0.3) (Css.em 0.3)
-                , Css.marginTop (Css.em -1.1)
-                ]
+            [ css logoBorder
             , Html.Styled.Attributes.src "/logo.png"
             , Html.Styled.Attributes.alt "Find your 9Birthdays"
             , Html.Styled.Attributes.title "Find your 9Birthdays"
@@ -795,7 +824,7 @@ myExperiences =
                 , Css.cursor Css.pointer
                 , Css.border Css.zero
                 , Css.color hyperlinkTextColor
-                , Css.backgroundColor white
+                , Css.backgroundColor backgroundColor
                 , Css.padding (Css.em 0.6)
                 , Css.borderRadius (Css.px 5)
                 ]
