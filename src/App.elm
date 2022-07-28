@@ -316,7 +316,7 @@ isCommonEra date =
 
 birthdateFromUrl : Url.Url -> Birthdate
 birthdateFromUrl url =
-    case Maybe.map Date.fromIsoString <| url.query of
+    case Maybe.map Date.fromIsoString url.query of
         Just (Ok birthdate) ->
             if isCommonEra birthdate then
                 birthdate
@@ -444,12 +444,13 @@ viewBirthday birthday =
             ]
             [ span [] [ text (commaSeparatedNumber ageSmart) ]
             , spanAtPercentage 40 " "
-            , spanAtPercentage 80 <|
-                if ageSmart == 1 then
+            , spanAtPercentage 80
+                (if ageSmart == 1 then
                     " yr"
 
-                else
+                 else
                     " yrs"
+                )
             , spanAtPercentage 40 " "
             , spanAtPercentage 80 "old"
             ]
@@ -738,7 +739,9 @@ birthdaysTitle =
 birthdays : Model -> Html Msg
 birthdays model =
     table birthdayTableHeading
-        (List.map viewBirthday <| List.sortWith Birthdays.compare model.birthdays)
+        (List.map viewBirthday
+            (List.sortWith Birthdays.compare model.birthdays)
+        )
 
 
 supplementaries : Html Msg
@@ -782,7 +785,9 @@ vipHeadings =
         ]
         [ span [] [ text "A few examples" ]
         , ul [ css [ Css.fontSize (Css.pct 75) ] ]
-            (List.map viewVIPLink <| List.sortWith compareVIPs vipLinks)
+            (List.map viewVIPLink
+                (List.sortWith compareVIPs vipLinks)
+            )
         ]
 
 
