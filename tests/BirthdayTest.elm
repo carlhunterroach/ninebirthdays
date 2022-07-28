@@ -1,7 +1,7 @@
 module BirthdayTest exposing (..)
 
 import App exposing (..)
-import Birthdays exposing (calculateBirthdays, PlanetaryBirthday)
+import Birthdays exposing (PlanetaryBirthday, calculateBirthdays)
 import Date
 import Expect
 import Test exposing (Test, describe, test)
@@ -30,14 +30,15 @@ notMercury =
     , todayOnEarth = fallbackDate
     }
 
+
 is_earth : PlanetaryBirthday -> Bool
 is_earth planetary_birthday =
     planetary_birthday.planetName == "Earth"
 
+
 is_jupiter : PlanetaryBirthday -> Bool
 is_jupiter planetary_birthday =
     planetary_birthday.planetName == "Jupiter"
-
 
 
 simple : Test
@@ -90,7 +91,7 @@ complex =
 
                     day =
                         Maybe.withDefault badPlanet
-                            ( List.head ( List.filter is_earth days ) )
+                            (List.head (List.filter is_earth days))
                 in
                 day.age |> Expect.equal 23
         , test "Earth birthday is same day of month/year?" <|
@@ -110,7 +111,8 @@ complex =
                             badPlanet
                             (List.head (List.filter is_earth days))
                 in
-                day.earthDate |> Expect.equal (Date.fromCalendarDate 2023 Jan 31)
+                day.earthDate
+                    |> Expect.equal (Date.fromCalendarDate 2023 Jan 31)
         , test "check a birthdate on Jupiter" <|
             \_ ->
                 let
@@ -124,7 +126,9 @@ complex =
                 in
                 case jupiterish of
                     Just jupiter ->
-                        Date.compare jupiter.earthDate (Date.fromCalendarDate 2024 Jun 5) |> Expect.equal EQ
+                        Date.compare jupiter.earthDate
+                            (Date.fromCalendarDate 2024 Jun 5)
+                            |> Expect.equal EQ
 
                     _ ->
                         Debug.todo "Never can reach here"
