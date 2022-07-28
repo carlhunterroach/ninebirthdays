@@ -126,7 +126,8 @@ defaultDayOr dayString =
 
 defaultMonthOr : String -> Month
 defaultMonthOr monthString =
-    Date.numberToMonth (Maybe.withDefault fallbackMonthValue (String.toInt monthString))
+    Date.numberToMonth
+        (Maybe.withDefault fallbackMonthValue (String.toInt monthString))
 
 
 defaultYearOr : String -> Int
@@ -285,13 +286,19 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         DayPicked dayString ->
-            onBirthdatePicked model (updateBirthdateDay model.userBirthdate dayString)
+            onBirthdatePicked
+                model
+                (updateBirthdateDay model.userBirthdate dayString)
 
         MonthPicked monthString ->
-            onBirthdatePicked model (updateBirthdateMonth model.userBirthdate monthString)
+            onBirthdatePicked
+                model
+                (updateBirthdateMonth model.userBirthdate monthString)
 
         YearPicked yearString ->
-            onBirthdatePicked model (updateBirthdateYear model.userBirthdate yearString)
+            onBirthdatePicked
+                model
+                (updateBirthdateYear model.userBirthdate yearString)
 
         AppStarted newToday ->
             onAppStarted model newToday
@@ -490,12 +497,20 @@ footer =
 
 monthOptions : ( Int, String ) -> Html Msg
 monthOptions ( monthZeroIndexed, string ) =
-    option [ Html.Styled.Attributes.value (String.fromInt (monthZeroIndexed + 1)) ] [ text string ]
+    option
+        [ Html.Styled.Attributes.value
+            (String.fromInt (monthZeroIndexed + 1))
+        ]
+        [ text string ]
 
 
 dayOption : Int -> Html msg
 dayOption day =
-    option [ Html.Styled.Attributes.value (String.fromInt day) ] [ text (String.fromInt day) ]
+    option
+        [ Html.Styled.Attributes.value
+            (String.fromInt day)
+        ]
+        [ text (String.fromInt day) ]
 
 
 dayOptions : Birthdate -> List (Html msg)
@@ -522,24 +537,68 @@ dayOptions birthdate =
 
 yearOptions : Int -> Html msg
 yearOptions year =
-    option [ Html.Styled.Attributes.value (String.fromInt year) ] [ text (String.fromInt year) ]
+    option
+        [ Html.Styled.Attributes.value (String.fromInt year)
+        ]
+        [ text (String.fromInt year) ]
 
 
-namesOfMonth : List String
-namesOfMonth =
-    [ "January"
-    , "February"
-    , "March"
-    , "April"
-    , "May"
-    , "June"
-    , "July"
-    , "August"
-    , "September"
-    , "October"
-    , "November"
-    , "December"
-    ]
+namesOfMonth : Month -> String
+namesOfMonth month =
+    case month of
+        Jan ->
+            "January"
+
+        Feb ->
+            "February"
+
+        Mar ->
+            "March"
+
+        Apr ->
+            "April"
+
+        May ->
+            "May"
+
+        Jun ->
+            "June"
+
+        Jul ->
+            "July"
+
+        Aug ->
+            "August"
+
+        Sep ->
+            "September"
+
+        Oct ->
+            "October"
+
+        Nov ->
+            "November"
+
+        Dec ->
+            "December"
+
+
+monthNames : List String
+monthNames =
+    List.map namesOfMonth
+        [ Jan
+        , Feb
+        , Mar
+        , Apr
+        , May
+        , Jun
+        , Jul
+        , Aug
+        , Sep
+        , Oct
+        , Nov
+        , Dec
+        ]
 
 
 selectDateCss : List Css.Style
@@ -556,7 +615,8 @@ dateInputs model =
             [ css
                 selectDateCss
             , Html.Styled.Events.onInput DayPicked
-            , Html.Styled.Attributes.value (String.fromInt (Date.day model.userBirthdate))
+            , Html.Styled.Attributes.value
+                (String.fromInt (Date.day model.userBirthdate))
             ]
             (dayOptions model.userBirthdate)
         , select
@@ -567,14 +627,16 @@ dateInputs model =
                        ]
                 )
             , Html.Styled.Events.onInput MonthPicked
-            , Html.Styled.Attributes.value (String.fromInt (Date.monthNumber model.userBirthdate))
+            , Html.Styled.Attributes.value
+                (String.fromInt (Date.monthNumber model.userBirthdate))
             ]
-            (List.map monthOptions (List.indexedMap Tuple.pair namesOfMonth))
+            (List.map monthOptions (List.indexedMap Tuple.pair monthNames))
         , select
             [ css
                 selectDateCss
             , Html.Styled.Events.onInput YearPicked
-            , Html.Styled.Attributes.value (String.fromInt (Date.year model.userBirthdate))
+            , Html.Styled.Attributes.value
+                (String.fromInt (Date.year model.userBirthdate))
             ]
             (List.map yearOptions (List.range 1 (Date.year model.today)))
         ]
@@ -615,7 +677,10 @@ vipLinks =
 
 compareVIPs : ( String, String ) -> ( String, String ) -> Order
 compareVIPs a b =
-    if String.filter isAlpha (Tuple.second a) < String.filter isAlpha (Tuple.second b) then
+    if
+        String.filter isAlpha (Tuple.second a)
+            < String.filter isAlpha (Tuple.second b)
+    then
         LT
 
     else
@@ -635,15 +700,22 @@ viewVIPLink ( path, name ) =
 
 celebrationTexts : List String
 celebrationTexts =
-    [ "On Mercury, spend sometime taking in the countryside"
-    , "For a Venusian birthday, make a new favourite meal - no cardboard containers, please"
-    , "On homely Earth, there is so much to celebrate and so much to do - try doing it with cake!!"
-    , "Grasp your Mars anniversary and go see a play or movie"
-    , "Jupiter birthdays are precious and rare - do something for the first time!"
-    , "Saturn starts a weekend whenever it falls so make time to celebrate with a friend"
-    , "Find one of the great inventors from history and mark their Uranus birthday with panache!"
-    , "Celebrate a great artist's Neptune birthday and do it wearing a hat :)"
-    , "Make your mark, here on planet Earth, and have the globe celebrate your first Plutonian birthday!!"
+    [ """On Mercury, spend sometime taking in the countryside"""
+    , """For a Venusian birthday, make a new favourite meal - no cardboard 
+    containers, please"""
+    , """On homely Earth, there is so much to celebrate and so much to do - try 
+    doing it with cake!!"""
+    , """Grasp your Mars anniversary and go see a play or movie"""
+    , """Jupiter birthdays are precious and rare - do something for the first 
+    time!"""
+    , """Saturn starts a weekend whenever it falls so make time to celebrate 
+    with a friend"""
+    , """Find one of the great inventors from history and mark their Uranus 
+    birthday with panache!"""
+    , """Celebrate a great artist's Neptune birthday and do it wearing a hat 
+    :)"""
+    , """Make your mark, here on planet Earth, and have the globe celebrate 
+    your first Plutonian birthday!!"""
     ]
 
 
@@ -767,14 +839,21 @@ insightMessage =
             , Css.marginBottom Css.zero
             ]
         ]
-        [ p [] [ text "Did you know we have birthdays on each planet in our solar system?" ]
+        [ p []
+            [ text
+                """Did you know we have birthdays on each planet in our solar 
+                system?"""
+            ]
         , p
             [ css
                 [ Css.fontSize (Css.pct 70)
                 , Css.marginTop (Css.em -1)
                 ]
             ]
-            [ text "It's true, enter your birthdate above and we'll calcuate your 9 birthdays" ]
+            [ text
+                """It's true, enter your birthdate above and we'll calcuate 
+                your 9 birthdays"""
+            ]
         ]
 
 

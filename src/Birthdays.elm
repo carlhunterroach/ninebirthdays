@@ -79,12 +79,22 @@ nextEarthAge birthdate today =
 
 nextAlienAge : Birthdate -> Today -> OrbitDays -> Int
 nextAlienAge birthdate today orbit =
-    ((toFloat (daysSinceBirthZeroIfInFuture birthdate today) / orbit) |> floor) + 1
+    floor
+        (toFloat
+            (daysSinceBirthZeroIfInFuture
+                birthdate
+                today
+            )
+            / orbit
+        )
+        + 1
 
 
 nextEarthBirthday : Birthdate -> Today -> Birthday
 nextEarthBirthday birthdate today =
-    Date.add Date.Years (yearsSinceBirthZeroIfInFuture birthdate today + 1) birthdate
+    Date.add Date.Years
+        (yearsSinceBirthZeroIfInFuture birthdate today + 1)
+        birthdate
 
 
 ageAtNextBirthday : Float -> Int -> Int
