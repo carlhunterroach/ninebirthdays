@@ -754,8 +754,8 @@ hyperlinkTextColor =
     Css.hex "#3894FF"
 
 
-backdrop : List (Attribute msg)
-backdrop =
+backdropStyle : List (Attribute msg)
+backdropStyle =
     [ css
         [ Css.backgroundImage (Css.url "/solar-system.png")
         , Css.backgroundRepeat Css.noRepeat
@@ -920,7 +920,7 @@ myExperiences =
 page : Model -> Html Msg
 page model =
     div
-        backdrop
+        backdropStyle
         [ logo
         , prompt
         , dateInputs model
