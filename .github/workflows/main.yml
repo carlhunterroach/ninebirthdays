@@ -33,15 +33,22 @@ jobs:
           
       - name: validate elm is installed
         run: elm --version
-      
-      - name: make
+
+      - name: install elm-test
+        run: elm install elm-explorations/test
+
+  make:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: make 9Birthdays
         run: elm make src/Main.elm
 
   test:
     runs-on: ubuntu-latest
- 
+    needs: make
     steps:
-      - uses: actions/checkout@v3
-      - name: build
+      - name: test 9Birthdays
         run: elm-test
       
