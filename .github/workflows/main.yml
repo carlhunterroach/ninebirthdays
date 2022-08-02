@@ -36,22 +36,4 @@ jobs:
       - name: install elm-test
         run: npx elm-test
 
-  make:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - name: validate elm is installed again
-        run: echo fake elm --version
-
-      - name: make 9Birthdays
-        run: echo fake elm make src/Main.elm
-
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: install elm-test
-        run: echo fake npx elm-test
-
-      
+  
