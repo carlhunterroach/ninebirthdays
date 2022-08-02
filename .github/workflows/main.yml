@@ -30,6 +30,9 @@ jobs:
       - name: validate elm is installed
         run: elm --version
 
+      - name: make 9Birthdays
+        run: elm make src/Main.elm
+
       - name: install elm-test
         run: npx elm-test
 
@@ -39,10 +42,10 @@ jobs:
 
     steps:
       - name: validate elm is installed again
-        run: elm --version
+        run: echo elm --version
 
       - name: make 9Birthdays
-        run: elm make src/Main.elm
+        run: echo elm make src/Main.elm
 
   test:
     runs-on: ubuntu-latest
