@@ -22,8 +22,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      - name: Install Elm tools and cache $ELM_HOME
-        uses: justgook/setup-elm@1.2.0
+      - name: Install elm, elm-format and cache the ELM_HOME directory
+        uses: mpizenberg/elm-tooling-action@v1.2
+        with:
+          cache-key: elm-home-${{ hashFiles('elm-tooling.json', 'elm.json') }}
           
       - name: validate elm is installed
         run: elm --version
@@ -44,7 +46,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    needs: make
+    needs: build
     steps:
       - name: test 9Birthdays
         run: elm-test
