@@ -33,7 +33,7 @@ jobs:
           echo test, and deploy your project.
 
   test:
-     runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
  
     steps:
       - uses: actions/checkout@v3
