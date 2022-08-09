@@ -124,8 +124,8 @@ nextAlienBirthday birthdate today orbit =
         birthdate
 
 
-calculate_birthday : Birthdate -> Today -> Planet -> PlanetaryBirthday
-calculate_birthday birthdate today planet =
+calculateBirthday : Birthdate -> Today -> Planet -> PlanetaryBirthday
+calculateBirthday birthdate today planet =
     { planetName = Planet.toName planet
     , age = toAge planet birthdate today
     , earthDate = toBirthday planet birthdate today
@@ -135,7 +135,7 @@ calculate_birthday birthdate today planet =
 
 calculateBirthdays : Birthdate -> Today -> List PlanetaryBirthday
 calculateBirthdays birthdate today =
-    List.map (calculate_birthday birthdate today) planets
+    List.map (calculateBirthday birthdate today) planets
 
 
 compare : PlanetaryBirthday -> PlanetaryBirthday -> Order
