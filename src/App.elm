@@ -1,5 +1,13 @@
 module App exposing (Model, Msg, app)
 
+{-| 9 Birthdays TEA
+
+    Given a birthdate,
+        immediately
+            update UI with birthdays on solar system planets
+
+-}
+
 import Birthdays exposing (Birthdate, PlanetaryBirthday, Today)
 import Browser
 import Browser.Dom as Dom

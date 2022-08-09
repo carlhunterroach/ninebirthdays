@@ -1,5 +1,8 @@
 module Planet exposing (OrbitDays, Planet(..), planets, toName)
 
+{-| Which planets and what we know what about them
+-}
+
 
 type alias OrbitDays =
     Float

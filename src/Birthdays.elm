@@ -6,6 +6,13 @@ module Birthdays exposing
     , compare
     )
 
+{-| birthdays and ages on solar system planets
+
+    Given a birthdate, a planet and today's date
+        calculate a birthday date and age
+
+-}
+
 import Date exposing (Date)
 import Planet exposing (OrbitDays, Planet(..), planets)
 
