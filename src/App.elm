@@ -10,8 +10,8 @@ module App exposing (Model, Msg, app)
 
 import Birthdays exposing (Birthdate, PlanetaryBirthday, Today)
 import Browser
-import Browser.Dom as Dom
-import Browser.Navigation as Nav
+import Browser.Dom
+import Browser.Navigation
 import Char exposing (isAlpha)
 import Css
 import Date exposing (Date)
@@ -86,7 +86,7 @@ type alias Model =
     { userBirthdate : Birthdate
     , birthdays : List PlanetaryBirthday
     , today : Today
-    , key : Nav.Key
+    , key : Browser.Navigation.Key
     , url : Url.Url
     }
 
@@ -95,19 +95,19 @@ type alias Model =
 -- FUNCTIONS
 
 
-initModel : Url.Url -> Nav.Key -> Model
-initModel url key =
-    { userBirthdate = fallbackBirthdate
-    , birthdays = dummyBirthdaysReplacedByAppStarted
-    , today = dummyTodayReplacedByAppStarted
-    , key = key
-    , url = url
-    }
-
-
-init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init : () -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
 init _ url key =
-    ( initModel url key
+    let
+        initModel : Model
+        initModel =
+            { userBirthdate = fallbackBirthdate
+            , birthdays = dummyBirthdaysReplacedByAppStarted
+            , today = dummyTodayReplacedByAppStarted
+            , key = key
+            , url = url
+            }
+    in
+    ( initModel
     , Task.perform AppStarted Date.today
     )
 
@@ -207,7 +207,7 @@ updateBirthdateYear birthdate yearString =
 onBirthdateChanged : Model -> Birthdate -> ( Model, Cmd Msg )
 onBirthdateChanged model birthdate =
     ( updateModelWithBirthdate model birthdate
-    , Nav.pushUrl model.key ("?" ++ Date.toIsoString birthdate)
+    , Browser.Navigation.pushUrl model.key ("?" ++ Date.toIsoString birthdate)
     )
 
 
@@ -247,7 +247,7 @@ onChangeBirthdateUrl model url =
 
 newTopPage : Url.Url -> Cmd Msg
 newTopPage url =
-    Task.perform (\_ -> ChangeUrl url) (Dom.setViewport 0 0)
+    Task.perform (\_ -> ChangeUrl url) (Browser.Dom.setViewport 0 0)
 
 
 onLinkedClicked : Model -> Browser.UrlRequest -> ( Model, Cmd Msg )
@@ -258,7 +258,7 @@ onLinkedClicked model urlRequest =
 
         Browser.External href ->
             ( model
-            , Nav.load href
+            , Browser.Navigation.load href
             )
 
 
@@ -275,14 +275,14 @@ onUrlChanged model url =
 onChangeUrl : Model -> Url.Url -> ( Model, Cmd Msg )
 onChangeUrl model url =
     ( model
-    , Nav.pushUrl model.key (Url.toString url)
+    , Browser.Navigation.pushUrl model.key (Url.toString url)
     )
 
 
 onTryingElm : Model -> ( Model, Cmd Msg )
 onTryingElm model =
     ( model
-    , Nav.load "/trying-elm.html"
+    , Browser.Navigation.load "/trying-elm.html"
     )
 
 
