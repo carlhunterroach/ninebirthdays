@@ -292,6 +292,10 @@ onTryingElm model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        _ =
+            Debug.log "update" msg
+    in
     case msg of
         DayPicked dayString ->
             onBirthdatePicked
@@ -355,6 +359,8 @@ isBirthdayToday birthday =
             == Date.day birthday.todayOnEarth
             && Date.month birthday.earthDate
             == Date.month birthday.todayOnEarth
+            && Date.year birthday.earthDate
+            == Date.year birthday.todayOnEarth
     then
         Today
 
@@ -395,7 +401,7 @@ smartAge birthday =
     -}
     case isBirthdayToday birthday of
         Today ->
-            birthday.age - 1
+            birthday.age
 
         Future ->
             birthday.age

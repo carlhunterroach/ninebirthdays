@@ -13,6 +13,7 @@ module Birthdays exposing
 
 -}
 
+import Basics.Extra
 import Date exposing (Date)
 import Planet exposing (OrbitDays, Planet(..), planets)
 
@@ -41,10 +42,6 @@ type alias PlanetaryBirthday =
     }
 
 
-
--- FUNCTIONS
-
-
 toAge : Planet -> Birthdate -> Today -> Int
 toAge planet birthdate today =
     case planet of
@@ -67,7 +64,7 @@ toBirthday planet birthdate today =
 
 daysSinceBirthZeroIfInFuture : Birthdate -> Today -> Int
 daysSinceBirthZeroIfInFuture birthdate today =
-    Basics.max 0 (Date.diff Date.Days birthdate today) + 1
+    Basics.max 0 (Date.diff Date.Days birthdate today)
 
 
 yearsSinceBirthZeroIfInFuture : Birthdate -> Today -> Int
@@ -84,17 +81,27 @@ nextEarthAge birthdate today =
     yearsSinceBirthZeroIfInFuture birthdate today + 1
 
 
+modulo : Float -> Float -> ( Float, Float )
+modulo dividend divisor =
+    ( dividend / divisor, Basics.Extra.fractionalModBy divisor dividend )
+
+
 nextAlienAge : Birthdate -> Today -> OrbitDays -> Int
 nextAlienAge birthdate today orbit =
-    floor
-        (toFloat
-            (daysSinceBirthZeroIfInFuture
-                birthdate
-                today
-            )
-            / orbit
-        )
-        + 1
+    let
+        ( age_today, remainder ) =
+            modulo
+                (toFloat (daysSinceBirthZeroIfInFuture birthdate today))
+                orbit
+
+        birthday_falls_today =
+            floor remainder == 0 || floor remainder >= floor orbit
+    in
+    if birthday_falls_today then
+        ceiling age_today
+
+    else
+        floor age_today + 1
 
 
 nextEarthBirthday : Birthdate -> Today -> Birthday
@@ -106,22 +113,23 @@ nextEarthBirthday birthdate today =
 
 ageAtNextBirthday : Float -> Int -> Int
 ageAtNextBirthday orbit daysSinceBirth =
-    ((toFloat daysSinceBirth / orbit) |> floor) + 1
+    (toFloat daysSinceBirth / orbit) + 1 |> floor
 
 
-daysToNextBirthday : Float -> Int -> Int
-daysToNextBirthday orbit nextBirthdayAge =
-    (toFloat nextBirthdayAge * orbit) |> floor
+daysToNextAlienBirthday : Float -> Int -> Int
+daysToNextAlienBirthday orbit age =
+    (toFloat age * orbit) |> floor
 
 
 nextAlienBirthday : Birthdate -> Today -> OrbitDays -> Birthday
 nextAlienBirthday birthdate today orbit =
-    Date.add Date.Days
-        (daysSinceBirthZeroIfInFuture birthdate today
-            |> ageAtNextBirthday orbit
-            |> daysToNextBirthday orbit
-        )
-        birthdate
+    let
+        daysToNextBirthday =
+            daysSinceBirthZeroIfInFuture birthdate today
+                |> ageAtNextBirthday orbit
+                |> daysToNextAlienBirthday orbit
+    in
+    Date.add Date.Days daysToNextBirthday birthdate
 
 
 calculateBirthday : Birthdate -> Today -> Planet -> PlanetaryBirthday
@@ -129,7 +137,7 @@ calculateBirthday birthdate today planet =
     { planetName = Planet.toName planet
     , age = toAge planet birthdate today
     , earthDate = toBirthday planet birthdate today
-    , todayOnEarth = today -- identify birthday's occuring today
+    , todayOnEarth = today -- helps identify birthday's occuring today
     }
 
 

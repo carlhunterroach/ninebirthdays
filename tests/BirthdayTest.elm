@@ -31,14 +31,24 @@ notMercury =
     }
 
 
-is_earth : PlanetaryBirthday -> Bool
-is_earth planetary_birthday =
-    planetary_birthday.planetName == "Earth"
+isMercury : PlanetaryBirthday -> Bool
+isMercury planetaryBirthday =
+    planetaryBirthday.planetName == "Mercury"
 
 
-is_jupiter : PlanetaryBirthday -> Bool
-is_jupiter planetary_birthday =
-    planetary_birthday.planetName == "Jupiter"
+isVenus : PlanetaryBirthday -> Bool
+isVenus planetaryBirthday =
+    planetaryBirthday.planetName == "Venus"
+
+
+isEarth : PlanetaryBirthday -> Bool
+isEarth planetaryBirthday =
+    planetaryBirthday.planetName == "Earth"
+
+
+isJupiter : PlanetaryBirthday -> Bool
+isJupiter planetaryBirthday =
+    planetaryBirthday.planetName == "Jupiter"
 
 
 simple : Test
@@ -91,7 +101,7 @@ complex =
 
                     day =
                         Maybe.withDefault badPlanet
-                            (List.head (List.filter is_earth days))
+                            (List.head (List.filter isEarth days))
                 in
                 day.age |> Expect.equal 23
         , test "Earth birthday is same day of month/year?" <|
@@ -109,25 +119,73 @@ complex =
                     day =
                         Maybe.withDefault
                             badPlanet
-                            (List.head (List.filter is_earth days))
+                            (List.head (List.filter isEarth days))
                 in
                 day.earthDate
                     |> Expect.equal (Date.fromCalendarDate 2023 Jan 31)
-        , test "check a birthdate on Jupiter" <|
+        , test "check Jupiter birthday occurs (11.8618 * 365.25) days later" <|
             \_ ->
                 let
                     planetaryBirthdays =
                         calculateBirthdays
-                            (Date.fromCalendarDate 1965 Feb 13)
-                            (Date.fromCalendarDate 2022 May 6)
+                            (Date.fromCalendarDate 2022 May 15)
+                            (Date.fromCalendarDate 2022 Aug 10)
 
                     jupiterish =
-                        List.head (List.filter is_jupiter planetaryBirthdays)
+                        List.head (List.filter isJupiter planetaryBirthdays)
                 in
                 case jupiterish of
                     Just jupiter ->
                         Date.compare jupiter.earthDate
-                            (Date.fromCalendarDate 2024 Jun 5)
+                            (Date.fromCalendarDate 2034 Mar 25)
+                            |> Expect.equal EQ
+
+                    _ ->
+                        Debug.todo "Never can reach here"
+        , test "check Mercury birthday occurs 87.969 days later" <|
+            \_ ->
+                let
+                    planetaryBirthdays =
+                        calculateBirthdays
+                            (Date.fromCalendarDate 2022 May 15)
+                            (Date.fromCalendarDate 2022 Aug 10)
+
+                    oneOnMercury =
+                        List.head (List.filter isMercury planetaryBirthdays)
+                in
+                case oneOnMercury of
+                    Just mercury ->
+                        let
+                            _ =
+                                Debug.log "mercury.earthDay" (Date.day mercury.earthDate)
+
+                            _ =
+                                Debug.log "mercury.earthMon" (Date.month mercury.earthDate)
+
+                            _ =
+                                Debug.log "mercury.earthYr" (Date.year mercury.earthDate)
+                        in
+                        Date.compare mercury.earthDate
+                            (Date.fromCalendarDate 2022 Aug 10)
+                            |> Expect.equal EQ
+
+                    _ ->
+                        Debug.todo "Never can reach here"
+        , test "check Venus birthday occurs 224.701 days later" <|
+            \_ ->
+                let
+                    planetaryBirthdays =
+                        calculateBirthdays
+                            (Date.fromCalendarDate 2022 May 15)
+                            (Date.fromCalendarDate 2022 Aug 10)
+
+                    oneOnVenus =
+                        List.head (List.filter isVenus planetaryBirthdays)
+                in
+                case oneOnVenus of
+                    Just venus ->
+                        Date.compare venus.earthDate
+                            (Date.fromCalendarDate 2022 Dec 25)
                             |> Expect.equal EQ
 
                     _ ->
