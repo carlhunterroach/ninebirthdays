@@ -633,7 +633,10 @@ dateInputs model =
             , Html.Styled.Attributes.value
                 (String.fromInt (Date.year model.userBirthdate))
             ]
-            (List.map yearOptions (List.range 1 (Date.year model.today)))
+            (List.map yearOptions <|
+                List.reverse <|
+                    List.range 1 (Date.year model.today)
+            )
         ]
 
 
