@@ -384,17 +384,16 @@ spanAtPercentage percentage content =
     span [ css [ Css.fontSize (Css.pct percentage) ] ] [ text content ]
 
 
-commaSeparatedNumber : Int -> String
-commaSeparatedNumber number =
-    FormatNumber.format
-        { usLocale
-            | decimals = Exact 0
-        }
-        (toFloat number)
-
-
 viewBirthday : PlanetaryBirthday -> Html Msg
 viewBirthday birthday =
+    let
+        commaSeparated number =
+            FormatNumber.format
+                { usLocale
+                    | decimals = Exact 0
+                }
+                (toFloat number)
+    in
     tr (smartRowStyle birthday)
         [ td
             [ css
@@ -416,7 +415,7 @@ viewBirthday birthday =
                 , Css.paddingRight (Css.em 0.5)
                 ]
             ]
-            [ span [] [ text (commaSeparatedNumber birthday.age) ]
+            [ span [] [ text (commaSeparated birthday.age) ]
             , spanAtPercentage 40 " "
             , spanAtPercentage 80
                 (if birthday.age == 1 then
