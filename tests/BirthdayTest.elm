@@ -209,7 +209,7 @@ complex =
 
                     _ ->
                         Debug.todo "Never can reach here"
-        , test "check today's birthdate calculates age as 1 not 0" <|
+        , test "check birthdate falling today calculates age as 1" <|
             \_ ->
                 let
                     planetaryBirthdays =

@@ -13,7 +13,6 @@ module Birthdays exposing
 
 -}
 
-import Basics.Extra
 import Date exposing (Date)
 import Planet exposing (OrbitDays, Planet(..), planets)
 
@@ -72,44 +71,19 @@ yearsSinceBirthZeroIfInFuture birthdate today =
     Basics.max 0 (Date.diff Date.Years birthdate today)
 
 
-
--- FUNCTIONS
-
-
 nextEarthAge : Birthdate -> Today -> Int
 nextEarthAge birthdate today =
     yearsSinceBirthZeroIfInFuture birthdate today + 1
 
 
-modulo : Float -> Float -> ( Float, Float )
-modulo dividend divisor =
-    ( dividend / divisor, Basics.Extra.fractionalModBy divisor dividend )
-
-
 nextAlienAge : Birthdate -> Today -> OrbitDays -> Int
 nextAlienAge birthdate today orbit =
     let
-        ( age_today, remainder ) =
-            modulo
-                (toFloat (daysSinceBirthZeroIfInFuture birthdate today))
-                orbit
-
-        birthday_falls_today =
-            floor remainder == 0 || floor remainder >= floor orbit
-
-        _ =
-            Debug.log "floor remainder" (floor remainder)
-
-        _ =
-            Debug.log "birthday_falls_today" birthday_falls_today
-
-        _ =
-            Debug.log "ceiling age_today" (ceiling age_today)
-
-        _ =
-            Debug.log "age_today + 1" (age_today + 1)
+        age_today =
+            toFloat (daysSinceBirthZeroIfInFuture birthdate today)
+                / orbit
     in
-    if birthday_falls_today && ceiling age_today /= 0 then
+    if birthdate /= today && ceiling age_today /= 0 then
         ceiling age_today
 
     else
