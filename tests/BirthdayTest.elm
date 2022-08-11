@@ -155,16 +155,6 @@ complex =
                 in
                 case oneOnMercury of
                     Just mercury ->
-                        let
-                            _ =
-                                Debug.log "mercury.earthDay" (Date.day mercury.earthDate)
-
-                            _ =
-                                Debug.log "mercury.earthMon" (Date.month mercury.earthDate)
-
-                            _ =
-                                Debug.log "mercury.earthYr" (Date.year mercury.earthDate)
-                        in
                         Date.compare mercury.earthDate
                             (Date.fromCalendarDate 2022 Aug 10)
                             |> Expect.equal EQ
@@ -228,4 +218,15 @@ complex =
 
                     _ ->
                         Debug.todo "Never can reach here"
+        , test "check no future months in current year offered" <|
+            \_ ->
+                let
+                    today =
+                        Date.fromCalendarDate 2022 Mar 1
+
+                    months =
+                        App.monthNames 2022 today
+                in
+                List.length months
+                    |> Expect.equal 3
         ]

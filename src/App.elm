@@ -1,4 +1,4 @@
-module App exposing (Model, Msg, app)
+module App exposing (Model, Msg, app, monthNames)
 
 {-| 9 Birthdays TEA
 
@@ -174,26 +174,33 @@ updateBirthdateYear birthdate yearString =
         (Date.day birthdate)
 
 
-onBirthdateChanged : Model -> Birthdate -> ( Model, Cmd Msg )
-onBirthdateChanged model birthdate =
-    ( { model
-        | userBirthdate = birthdate
-        , birthdays = Birthdays.calculateBirthdays birthdate model.today
-      }
-    , Browser.Navigation.pushUrl model.key ("?" ++ Date.toIsoString birthdate)
-    )
-
-
 onBirthdatePicked : Model -> Birthdate -> ( Model, Cmd Msg )
 onBirthdatePicked model birthdate =
-    onBirthdateChanged model birthdate
+    let
+        not_a_future_birthdate =
+            if Date.compare birthdate model.today == GT then
+                model.today
+
+            else
+                birthdate
+    in
+    ( { model
+        | userBirthdate = not_a_future_birthdate
+        , birthdays =
+            Birthdays.calculateBirthdays
+                not_a_future_birthdate
+                model.today
+      }
+    , Browser.Navigation.pushUrl model.key
+        ("?" ++ Date.toIsoString not_a_future_birthdate)
+    )
 
 
 onAppStarted : Model -> Today -> ( Model, Cmd Msg )
 onAppStarted model today =
     let
         newBirthdate =
-            birthdateFromUrl model.url
+            birthdateFromUrl model.url model.today
     in
     ( { model
         | userBirthdate = newBirthdate
@@ -208,7 +215,7 @@ onChangeBirthdateUrl : Model -> Url.Url -> ( Model, Cmd Msg )
 onChangeBirthdateUrl model url =
     let
         newBirthdate =
-            birthdateFromUrl url
+            birthdateFromUrl url model.today
     in
     ( { model
         | userBirthdate = newBirthdate
@@ -238,7 +245,7 @@ onLinkedClicked model urlRequest =
 onUrlChanged : Model -> Url.Url -> ( Model, Cmd Msg )
 onUrlChanged model url =
     ( { model
-        | userBirthdate = birthdateFromUrl url
+        | userBirthdate = birthdateFromUrl url model.today
         , url = url
       }
     , Cmd.none
@@ -265,10 +272,6 @@ onTryingElm model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    let
-        _ =
-            Debug.log "update" msg
-    in
     case msg of
         DayPicked dayString ->
             onBirthdatePicked
@@ -301,16 +304,18 @@ update msg model =
             onTryingElm model
 
 
-isCommonEra : Date -> Bool
-isCommonEra date =
-    Date.year date > 0
+{-| axiom: accept only birthdates from year 1 to today
+-}
+inRange : Date -> Today -> Bool
+inRange date today =
+    Date.year date > 0 && not (Date.compare date today == GT)
 
 
-birthdateFromUrl : Url.Url -> Birthdate
-birthdateFromUrl url =
+birthdateFromUrl : Url.Url -> Today -> Birthdate
+birthdateFromUrl url today =
     case Maybe.map Date.fromIsoString url.query of
         Just (Ok birthdate) ->
-            if isCommonEra birthdate then
+            if inRange birthdate today then
                 birthdate
 
             else
@@ -327,23 +332,11 @@ type WhenIsBirthday
 
 isBirthdayToday : PlanetaryBirthday -> WhenIsBirthday
 isBirthdayToday birthday =
-    if
-        Date.day birthday.earthDate
-            == Date.day birthday.todayOnEarth
-            && Date.month birthday.earthDate
-            == Date.month birthday.todayOnEarth
-            && Date.year birthday.earthDate
-            == Date.year birthday.todayOnEarth
-    then
+    if Date.compare birthday.earthDate birthday.todayOnEarth == EQ then
         Today
 
     else
         Future
-
-
-ordinalisedDate : Date -> String
-ordinalisedDate date =
-    Ordinal.ordinal (Date.format "d" date) ++ Date.format " MMM y" date
 
 
 smartBirthdayMessage : PlanetaryBirthday -> List (Html msg)
@@ -353,6 +346,11 @@ smartBirthdayMessage birthday =
        while technically the next birthday is an orit away
        we really should shout out Happy Birthday today!
     -}
+    let
+        ordinalisedDate =
+            Ordinal.ordinal (Date.format "d" birthday.earthDate)
+                ++ Date.format " MMM y" birthday.earthDate
+    in
     case isBirthdayToday birthday of
         Today ->
             [ span
@@ -361,23 +359,8 @@ smartBirthdayMessage birthday =
             ]
 
         Future ->
-            [ text (ordinalisedDate birthday.earthDate)
+            [ text ordinalisedDate
             ]
-
-
-smartAge : PlanetaryBirthday -> Int
-smartAge birthday =
-    {-
-       special case: if today is a birthday, then
-       don't just return the up and coming age
-       but the current age
-    -}
-    case isBirthdayToday birthday of
-        Today ->
-            birthday.age
-
-        Future ->
-            birthday.age
 
 
 smartRowStyle : PlanetaryBirthday -> List (Attribute msg)
@@ -411,10 +394,6 @@ commaSeparatedNumber number =
 
 viewBirthday : PlanetaryBirthday -> Html Msg
 viewBirthday birthday =
-    let
-        ageSmart =
-            smartAge birthday
-    in
     tr (smartRowStyle birthday)
         [ td
             [ css
@@ -436,10 +415,10 @@ viewBirthday birthday =
                 , Css.paddingRight (Css.em 0.5)
                 ]
             ]
-            [ span [] [ text (commaSeparatedNumber ageSmart) ]
+            [ span [] [ text (commaSeparatedNumber birthday.age) ]
             , spanAtPercentage 40 " "
             , spanAtPercentage 80
-                (if ageSmart == 1 then
+                (if birthday.age == 1 then
                     " yr"
 
                  else
@@ -504,26 +483,34 @@ dayOption day =
 -- set Day input to correct number of days for Month/Year picked
 
 
-dayOptions : Birthdate -> List (Html msg)
-dayOptions birthdate =
+dayOptions : Birthdate -> Today -> List (Html msg)
+dayOptions birthdate today =
     let
-        dayMax =
-            case Date.month birthdate of
-                Feb ->
-                    if isLeapYear (Date.year birthdate) then
-                        29
+        maxValidDay =
+            min
+                (if Date.compare birthdate today == EQ then
+                    Date.day today
 
-                    else
-                        28
+                 else
+                    31
+                )
+                (case Date.month birthdate of
+                    Feb ->
+                        if isLeapYear (Date.year birthdate) then
+                            29
 
-                other ->
-                    if List.member other [ Apr, Jun, Sep, Nov ] then
-                        30
+                        else
+                            28
 
-                    else
-                        31
+                    other ->
+                        if List.member other [ Apr, Jun, Sep, Nov ] then
+                            30
+
+                        else
+                            31
+                )
     in
-    List.map dayOption (List.range 1 dayMax)
+    List.map dayOption (List.range 1 maxValidDay)
 
 
 yearOptions : Int -> Html msg
@@ -574,22 +561,75 @@ namesOfMonth month =
             "December"
 
 
-monthNames : List String
-monthNames =
-    List.map namesOfMonth
-        [ Jan
-        , Feb
-        , Mar
-        , Apr
-        , May
-        , Jun
-        , Jul
-        , Aug
-        , Sep
-        , Oct
-        , Nov
-        , Dec
-        ]
+monthNumber : Month -> number
+monthNumber month =
+    case month of
+        Jan ->
+            1
+
+        Feb ->
+            2
+
+        Mar ->
+            3
+
+        Apr ->
+            4
+
+        May ->
+            5
+
+        Jun ->
+            6
+
+        Jul ->
+            7
+
+        Aug ->
+            8
+
+        Sep ->
+            9
+
+        Oct ->
+            10
+
+        Nov ->
+            11
+
+        Dec ->
+            12
+
+
+validMonth : Today -> Year -> Month -> Bool
+validMonth today year month =
+    if year == Date.year today then
+        monthNumber month <= Date.monthNumber today
+
+    else
+        True
+
+
+months : List Month
+months =
+    [ Jan
+    , Feb
+    , Mar
+    , Apr
+    , May
+    , Jun
+    , Jul
+    , Aug
+    , Sep
+    , Oct
+    , Nov
+    , Dec
+    ]
+
+
+monthNames : Year -> Today -> List String
+monthNames year today =
+    List.map namesOfMonth (List.filter (validMonth today year) months)
 
 
 selectDateCss : List Css.Style
@@ -609,7 +649,7 @@ dateInputs model =
             , Html.Styled.Attributes.value
                 (String.fromInt (Date.day model.userBirthdate))
             ]
-            (dayOptions model.userBirthdate)
+            (dayOptions model.userBirthdate model.today)
         , select
             [ css
                 (selectDateCss
@@ -621,7 +661,11 @@ dateInputs model =
             , Html.Styled.Attributes.value
                 (String.fromInt (Date.monthNumber model.userBirthdate))
             ]
-            (List.map monthOptions (List.indexedMap Tuple.pair monthNames))
+            (List.map monthOptions
+                (List.indexedMap Tuple.pair
+                    (monthNames (Date.year model.userBirthdate) model.today)
+                )
+            )
         , select
             [ css
                 selectDateCss
