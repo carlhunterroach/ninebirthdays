@@ -68,6 +68,29 @@ type Msg
 
 app : Program () Model Msg
 app =
+    let
+        init : () -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
+        init _ url key =
+            let
+                dummyTodayReplacedByAppStarted =
+                    Date.fromCalendarDate 2022 May 1
+
+                dummyBirthdaysReplacedByAppStarted =
+                    []
+
+                initModel : Model
+                initModel =
+                    { userBirthdate = fallbackBirthdate
+                    , birthdays = dummyBirthdaysReplacedByAppStarted
+                    , today = dummyTodayReplacedByAppStarted
+                    , key = key
+                    , url = url
+                    }
+            in
+            ( initModel
+            , Task.perform AppStarted Date.today
+            )
+    in
     Browser.application
         { init = init
         , view = view
@@ -95,23 +118,6 @@ type alias Model =
 -- FUNCTIONS
 
 
-init : () -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
-init _ url key =
-    let
-        initModel : Model
-        initModel =
-            { userBirthdate = fallbackBirthdate
-            , birthdays = dummyBirthdaysReplacedByAppStarted
-            , today = dummyTodayReplacedByAppStarted
-            , key = key
-            , url = url
-            }
-    in
-    ( initModel
-    , Task.perform AppStarted Date.today
-    )
-
-
 isLeapYear : Year -> Bool
 isLeapYear y =
     modBy 4 y == 0 && modBy 100 y /= 0 || modBy 400 y == 0
@@ -125,22 +131,6 @@ fallbackDay =
 fallbackMonth : Month
 fallbackMonth =
     Jan
-
-
-defaultDayOr : String -> Int
-defaultDayOr dayString =
-    Maybe.withDefault fallbackDay (String.toInt dayString)
-
-
-defaultMonthOr : String -> Month
-defaultMonthOr monthString =
-    Date.numberToMonth
-        (Maybe.withDefault fallbackMonthValue (String.toInt monthString))
-
-
-defaultYearOr : String -> Int
-defaultYearOr yearString =
-    Maybe.withDefault fallbackYear (String.toInt yearString)
 
 
 fallbackMonthValue : number
@@ -158,55 +148,38 @@ fallbackBirthdate =
     Date.fromCalendarDate fallbackYear fallbackMonth fallbackDay
 
 
-dummyTodayReplacedByAppStarted : Date
-dummyTodayReplacedByAppStarted =
-    Date.fromCalendarDate 2022 May 1
-
-
-dummyBirthdaysReplacedByAppStarted : List PlanetaryBirthday
-dummyBirthdaysReplacedByAppStarted =
-    []
-
-
-
--- set Day input to correct number of days for Month/Year picked
-
-
-updateModelWithBirthdate : Model -> Birthdate -> Model
-updateModelWithBirthdate model newBirthdate =
-    { model
-        | userBirthdate = newBirthdate
-        , birthdays = Birthdays.calculateBirthdays newBirthdate model.today
-    }
-
-
 updateBirthdateDay : Birthdate -> String -> Birthdate
 updateBirthdateDay birthdate dayString =
     Date.fromCalendarDate
         (Date.year birthdate)
         (Date.month birthdate)
-        (defaultDayOr dayString)
+        (Maybe.withDefault fallbackDay (String.toInt dayString))
 
 
 updateBirthdateMonth : Birthdate -> String -> Birthdate
 updateBirthdateMonth birthdate monthString =
     Date.fromCalendarDate
         (Date.year birthdate)
-        (defaultMonthOr monthString)
+        (Date.numberToMonth
+            (Maybe.withDefault fallbackMonthValue (String.toInt monthString))
+        )
         (Date.day birthdate)
 
 
 updateBirthdateYear : Birthdate -> String -> Birthdate
 updateBirthdateYear birthdate yearString =
     Date.fromCalendarDate
-        (defaultYearOr yearString)
+        (Maybe.withDefault fallbackYear (String.toInt yearString))
         (Date.month birthdate)
         (Date.day birthdate)
 
 
 onBirthdateChanged : Model -> Birthdate -> ( Model, Cmd Msg )
 onBirthdateChanged model birthdate =
-    ( updateModelWithBirthdate model birthdate
+    ( { model
+        | userBirthdate = birthdate
+        , birthdays = Birthdays.calculateBirthdays birthdate model.today
+      }
     , Browser.Navigation.pushUrl model.key ("?" ++ Date.toIsoString birthdate)
     )
 
@@ -525,6 +498,10 @@ dayOption day =
             (String.fromInt day)
         ]
         [ text (String.fromInt day) ]
+
+
+
+-- set Day input to correct number of days for Month/Year picked
 
 
 dayOptions : Birthdate -> List (Html msg)
