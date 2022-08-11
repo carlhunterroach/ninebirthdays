@@ -307,13 +307,13 @@ update msg model =
 
 {-| axiom: accept only birthdates from year 1 to today
 -}
-inRange : Date -> Today -> Bool
-inRange date today =
-    Date.year date > 0 && not (Date.compare date today == GT)
-
-
 birthdateFromUrl : Url.Url -> Today -> Birthdate
 birthdateFromUrl url today =
+    let
+        inRange : Date -> Today -> Bool
+        inRange date now =
+            Date.year date > 0 && not (Date.compare date now == GT)
+    in
     case Maybe.map Date.fromIsoString url.query of
         Just (Ok birthdate) ->
             if inRange birthdate today then
@@ -364,29 +364,27 @@ smartBirthdayMessage birthday =
             ]
 
 
-smartRowStyle : PlanetaryBirthday -> List (Attribute msg)
-smartRowStyle birthday =
-    case whenIsBirthday birthday of
-        Today ->
-            [ css
-                [ Css.color backdropTextColor
-                , Css.fontFamily Css.cursive
-                , Css.fontSize (Css.pct 105)
-                ]
-            ]
-
-        Future ->
-            []
-
-
-spanAtPercentage : Float -> String -> Html msg
-spanAtPercentage percentage content =
-    span [ css [ Css.fontSize (Css.pct percentage) ] ] [ text content ]
-
-
 viewBirthday : PlanetaryBirthday -> Html Msg
 viewBirthday birthday =
     let
+        smartRowStyle =
+            case whenIsBirthday birthday of
+                Today ->
+                    [ css
+                        [ Css.color backdropTextColor
+                        , Css.fontFamily Css.cursive
+                        , Css.fontSize (Css.pct 105)
+                        ]
+                    ]
+
+                Future ->
+                    []
+
+        spanAtPercentage : Float -> String -> Html msg
+        spanAtPercentage percentage content =
+            span [ css [ Css.fontSize (Css.pct percentage) ] ] [ text content ]
+
+        commaSeparated : Int -> String
         commaSeparated number =
             FormatNumber.format
                 { usLocale
@@ -394,7 +392,7 @@ viewBirthday birthday =
                 }
                 (toFloat number)
     in
-    tr (smartRowStyle birthday)
+    tr smartRowStyle
         [ td
             [ css
                 [ Css.textAlign Css.left
