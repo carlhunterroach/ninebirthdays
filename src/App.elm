@@ -14,7 +14,7 @@ import Browser.Dom
 import Browser.Navigation
 import Char exposing (isAlpha)
 import Css
-import Date exposing (Date)
+import Date
 import FormatNumber
 import FormatNumber.Locales exposing (Decimals(..), usLocale)
 import Html.Styled
@@ -77,17 +77,13 @@ app =
 
                 dummyBirthdaysReplacedByAppStarted =
                     []
-
-                initModel : Model
-                initModel =
-                    { userBirthdate = fallbackBirthdate
-                    , birthdays = dummyBirthdaysReplacedByAppStarted
-                    , today = dummyTodayReplacedByAppStarted
-                    , key = key
-                    , url = url
-                    }
             in
-            ( initModel
+            ( { userBirthdate = fallbackBirthdate
+              , birthdays = dummyBirthdaysReplacedByAppStarted
+              , today = dummyTodayReplacedByAppStarted
+              , key = key
+              , url = url
+              }
             , Task.perform AppStarted Date.today
             )
     in
@@ -198,15 +194,15 @@ onBirthdatePicked model birthdate =
 
 
 onAppStarted : Model -> Today -> ( Model, Cmd Msg )
-onAppStarted model today =
+onAppStarted model newToday =
     let
         newBirthdate =
-            birthdateFromUrl model.url model.today
+            birthdateFromUrl model.url newToday
     in
     ( { model
         | userBirthdate = newBirthdate
-        , today = today
-        , birthdays = Birthdays.calculateBirthdays newBirthdate today
+        , today = newToday
+        , birthdays = Birthdays.calculateBirthdays newBirthdate newToday
       }
     , Cmd.none
     )
@@ -309,14 +305,14 @@ update msg model =
 -}
 birthdateFromUrl : Url.Url -> Today -> Birthdate
 birthdateFromUrl url today =
-    let
-        inRange : Date -> Today -> Bool
-        inRange date now =
-            Date.year date > 0 && not (Date.compare date now == GT)
-    in
     case Maybe.map Date.fromIsoString url.query of
         Just (Ok birthdate) ->
-            if inRange birthdate today then
+            if
+                Date.year birthdate
+                    > 0
+                    && Date.compare birthdate today
+                    /= GT
+            then
                 birthdate
 
             else
@@ -565,50 +561,10 @@ namesOfMonth month =
             "December"
 
 
-monthNumber : Month -> number
-monthNumber month =
-    case month of
-        Jan ->
-            1
-
-        Feb ->
-            2
-
-        Mar ->
-            3
-
-        Apr ->
-            4
-
-        May ->
-            5
-
-        Jun ->
-            6
-
-        Jul ->
-            7
-
-        Aug ->
-            8
-
-        Sep ->
-            9
-
-        Oct ->
-            10
-
-        Nov ->
-            11
-
-        Dec ->
-            12
-
-
 validMonth : Today -> Year -> Month -> Bool
 validMonth today year month =
     if year == Date.year today then
-        monthNumber month <= Date.monthNumber today
+        Date.monthToNumber month <= Date.monthNumber today
 
     else
         True
