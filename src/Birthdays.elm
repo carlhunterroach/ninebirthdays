@@ -79,15 +79,15 @@ nextEarthAge birthdate today =
 nextAlienAge : Birthdate -> Today -> OrbitDays -> Int
 nextAlienAge birthdate today orbit =
     let
-        age_today =
+        ageToday =
             toFloat (daysSinceBirthZeroIfInFuture birthdate today)
                 / orbit
     in
-    if birthdate /= today && ceiling age_today /= 0 then
-        ceiling age_today
+    if birthdate /= today && ceiling ageToday /= 0 then
+        ceiling ageToday
 
     else
-        floor age_today + 1
+        floor ageToday + 1
 
 
 nextEarthBirthday : Birthdate -> Today -> Birthday
