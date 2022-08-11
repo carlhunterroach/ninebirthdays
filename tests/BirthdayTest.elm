@@ -1,6 +1,6 @@
 module BirthdayTest exposing (..)
 
-import App exposing (..)
+import App
 import Birthdays exposing (PlanetaryBirthday, calculateBirthdays)
 import Date
 import Expect
