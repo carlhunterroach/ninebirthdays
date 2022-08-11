@@ -96,8 +96,20 @@ nextAlienAge birthdate today orbit =
 
         birthday_falls_today =
             floor remainder == 0 || floor remainder >= floor orbit
+
+        _ =
+            Debug.log "floor remainder" (floor remainder)
+
+        _ =
+            Debug.log "birthday_falls_today" birthday_falls_today
+
+        _ =
+            Debug.log "ceiling age_today" (ceiling age_today)
+
+        _ =
+            Debug.log "age_today + 1" (age_today + 1)
     in
-    if birthday_falls_today then
+    if birthday_falls_today && ceiling age_today /= 0 then
         ceiling age_today
 
     else

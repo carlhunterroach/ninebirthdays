@@ -190,4 +190,42 @@ complex =
 
                     _ ->
                         Debug.todo "Never can reach here"
+        , test "check future birthdate calculates age as 1 not 0" <|
+            \_ ->
+                let
+                    planetaryBirthdays =
+                        calculateBirthdays
+                            (Date.fromCalendarDate 2022 May 15)
+                            (Date.fromCalendarDate 2022 May 14)
+
+                    oneOnVenus =
+                        List.head (List.filter isVenus planetaryBirthdays)
+                in
+                case oneOnVenus of
+                    Just venus ->
+                        venus.age
+                            == 1
+                            |> Expect.equal True
+
+                    _ ->
+                        Debug.todo "Never can reach here"
+        , test "check today's birthdate calculates age as 1 not 0" <|
+            \_ ->
+                let
+                    planetaryBirthdays =
+                        calculateBirthdays
+                            (Date.fromCalendarDate 2022 May 15)
+                            (Date.fromCalendarDate 2022 May 15)
+
+                    oneOnVenus =
+                        List.head (List.filter isVenus planetaryBirthdays)
+                in
+                case oneOnVenus of
+                    Just venus ->
+                        venus.age
+                            == 1
+                            |> Expect.equal True
+
+                    _ ->
+                        Debug.todo "Never can reach here"
         ]
