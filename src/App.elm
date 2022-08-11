@@ -177,22 +177,23 @@ updateBirthdateYear birthdate yearString =
 onBirthdatePicked : Model -> Birthdate -> ( Model, Cmd Msg )
 onBirthdatePicked model birthdate =
     let
-        not_a_future_birthdate =
+        correctedBirthdate =
             if Date.compare birthdate model.today == GT then
+                -- any future birthdate is pulled back
                 model.today
 
             else
                 birthdate
     in
     ( { model
-        | userBirthdate = not_a_future_birthdate
+        | userBirthdate = correctedBirthdate
         , birthdays =
             Birthdays.calculateBirthdays
-                not_a_future_birthdate
+                correctedBirthdate
                 model.today
       }
     , Browser.Navigation.pushUrl model.key
-        ("?" ++ Date.toIsoString not_a_future_birthdate)
+        ("?" ++ Date.toIsoString correctedBirthdate)
     )
 
 
@@ -325,13 +326,13 @@ birthdateFromUrl url today =
             fallbackBirthdate
 
 
-type WhenIsBirthday
+type When
     = Today
     | Future
 
 
-isBirthdayToday : PlanetaryBirthday -> WhenIsBirthday
-isBirthdayToday birthday =
+whenIsBirthday : PlanetaryBirthday -> When
+whenIsBirthday birthday =
     if Date.compare birthday.earthDate birthday.todayOnEarth == EQ then
         Today
 
@@ -351,7 +352,7 @@ smartBirthdayMessage birthday =
             Ordinal.ordinal (Date.format "d" birthday.earthDate)
                 ++ Date.format " MMM y" birthday.earthDate
     in
-    case isBirthdayToday birthday of
+    case whenIsBirthday birthday of
         Today ->
             [ span
                 [ css [ Css.fontFamily Css.cursive ] ]
@@ -365,7 +366,7 @@ smartBirthdayMessage birthday =
 
 smartRowStyle : PlanetaryBirthday -> List (Attribute msg)
 smartRowStyle birthday =
-    case isBirthdayToday birthday of
+    case whenIsBirthday birthday of
         Today ->
             [ css
                 [ Css.color backdropTextColor
@@ -479,16 +480,22 @@ dayOption day =
         [ text (String.fromInt day) ]
 
 
+isInBirthdayMonth : Birthdate -> Today -> Bool
+isInBirthdayMonth birthdate today =
+    Date.month birthdate
+        == Date.month today
+        && Date.year birthdate
+        == Date.year today
 
--- set Day input to correct number of days for Month/Year picked
 
-
+{-| set Day input to correct number of days for Month/Year picked
+-}
 dayOptions : Birthdate -> Today -> List (Html msg)
 dayOptions birthdate today =
     let
         maxValidDay =
             min
-                (if Date.compare birthdate today == EQ then
+                (if isInBirthdayMonth birthdate today then
                     Date.day today
 
                  else
