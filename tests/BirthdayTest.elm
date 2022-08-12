@@ -1,9 +1,9 @@
 module BirthdayTest exposing (..)
 
-import App
 import Birthdays exposing (PlanetaryBirthday, calculateBirthdays)
 import Date
 import Expect
+import Main
 import Test exposing (Test, describe, test)
 import Time exposing (Month(..))
 
@@ -225,7 +225,7 @@ complex =
                         Date.fromCalendarDate 2022 Mar 1
 
                     months =
-                        App.monthNames 2022 today
+                        Main.monthNames 2022 today
                 in
                 List.length months
                     |> Expect.equal 3
