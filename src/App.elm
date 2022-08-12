@@ -329,7 +329,7 @@ type When
 
 whenIsBirthday : PlanetaryBirthday -> When
 whenIsBirthday birthday =
-    if Date.compare birthday.earthDate birthday.todayOnEarth == EQ then
+    if Date.compare birthday.date birthday.todayOnEarth == EQ then
         Today
 
     else
@@ -345,8 +345,8 @@ smartBirthdayMessage birthday =
     -}
     let
         ordinalisedDate =
-            Ordinal.ordinal (Date.format "d" birthday.earthDate)
-                ++ Date.format " MMM y" birthday.earthDate
+            Ordinal.ordinal (Date.format "d" birthday.date)
+                ++ Date.format " MMM y" birthday.date
     in
     case whenIsBirthday birthday of
         Today ->

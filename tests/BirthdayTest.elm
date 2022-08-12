@@ -17,7 +17,7 @@ badPlanet : PlanetaryBirthday
 badPlanet =
     { planetName = "BadPlanet"
     , age = 99999
-    , earthDate = fallbackDate
+    , date = fallbackDate
     , todayOnEarth = fallbackDate
     }
 
@@ -26,7 +26,7 @@ notMercury : PlanetaryBirthday
 notMercury =
     { planetName = "NotMercury"
     , age = 21
-    , earthDate = fallbackDate
+    , date = fallbackDate
     , todayOnEarth = fallbackDate
     }
 
@@ -121,7 +121,7 @@ complex =
                             badPlanet
                             (List.head (List.filter isEarth days))
                 in
-                day.earthDate
+                day.date
                     |> Expect.equal (Date.fromCalendarDate 2023 Jan 31)
         , test "check Jupiter birthday occurs (11.8618 * 365.25) days later" <|
             \_ ->
@@ -136,7 +136,7 @@ complex =
                 in
                 case jupiterish of
                     Just jupiter ->
-                        Date.compare jupiter.earthDate
+                        Date.compare jupiter.date
                             (Date.fromCalendarDate 2034 Mar 25)
                             |> Expect.equal EQ
 
@@ -155,7 +155,7 @@ complex =
                 in
                 case oneOnMercury of
                     Just mercury ->
-                        Date.compare mercury.earthDate
+                        Date.compare mercury.date
                             (Date.fromCalendarDate 2022 Aug 10)
                             |> Expect.equal EQ
 
@@ -174,7 +174,7 @@ complex =
                 in
                 case oneOnVenus of
                     Just venus ->
-                        Date.compare venus.earthDate
+                        Date.compare venus.date
                             (Date.fromCalendarDate 2022 Dec 25)
                             |> Expect.equal EQ
 
