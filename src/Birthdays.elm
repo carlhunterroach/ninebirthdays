@@ -83,11 +83,11 @@ nextAlienAge birthdate today orbit =
             toFloat (daysSinceBirthZeroIfInFuture birthdate today)
                 / orbit
     in
-    if birthdate /= today && ceiling ageToday /= 0 then
-        ceiling ageToday
+    if birthdate == today || floor ageToday == 0 then
+        1
 
     else
-        floor ageToday + 1
+        ceiling ageToday
 
 
 nextEarthBirthday : Birthdate -> Today -> Birthday
