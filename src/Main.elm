@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg, dayOptions, isLeapYear, main, monthNames)
+module Main exposing (Model, Msg, dayOptions, isLeapYear, main, monthNames, validMonth)
 
 {-| A mind-alternating bit of silliness called 9 Birthdays
 
@@ -618,13 +618,36 @@ namesOfMonth month =
             "December"
 
 
+{-|
+
+    is this a month that 9 Birthdays supports?
+    because... future birthdates are not supported
+
+    import Date
+    import Time exposing (Month(..))
+
+    -- is past date valid?
+    validMonth (Date.fromCalendarDate 2022 Jan 1) 2000 Jan
+    --> True
+
+    -- is future year valid?
+    validMonth (Date.fromCalendarDate 2022 Jan 1) 2023 Feb
+    --> False
+
+    -- is future month in current year valid?
+    validMonth (Date.fromCalendarDate 2022 Jan 1) 2022 Feb
+
+-}
 validMonth : Today -> Year -> Month -> Bool
 validMonth today year month =
-    if year == Date.year today then
+    if year < Date.year today then
+        True
+
+    else if year == Date.year today then
         Date.monthToNumber month <= Date.monthNumber today
 
     else
-        True
+        False
 
 
 months : List Month
