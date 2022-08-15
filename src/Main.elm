@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg, main, monthNames)
+module Main exposing (Model, Msg, dayOptions, isLeapYear, main, monthNames)
 
 {-| A mind-alternating bit of silliness called 9 Birthdays
 
@@ -131,6 +131,18 @@ type alias Model =
 -- FUNCTIONS
 
 
+{-|
+
+    isLeapYear 2001
+    --> False
+
+    isLeapYear 2000
+    --> True
+
+    isLeapYear 1984
+    --> True
+
+-}
 isLeapYear : Year -> Bool
 isLeapYear y =
     modBy 4 y == 0 && modBy 100 y /= 0 || modBy 400 y == 0
@@ -356,7 +368,7 @@ whenIsBirthday birthday =
 smartBirthdayMessage : PlanetaryBirthday -> List (Html msg)
 smartBirthdayMessage birthday =
     {-
-       specical case: if today is a birthday, then
+       special case: if today is a birthday, then
        while technically the next birthday is an orit away
        we really should shout out Happy Birthday today!
     -}
@@ -490,22 +502,50 @@ dayOption day =
         [ text (String.fromInt day) ]
 
 
-isInBirthdayMonth : Birthdate -> Today -> Bool
-isInBirthdayMonth birthdate today =
+inBirthdayMonth : Birthdate -> Today -> Bool
+inBirthdayMonth birthdate today =
     Date.month birthdate
         == Date.month today
         && Date.year birthdate
         == Date.year today
 
 
-{-| set Day input to correct number of days for Month/Year picked
+{-|
+
+    generate a list of HTML <options> days for a <select>
+    users pick from this list the day of their birthdate
+    special case: no future dates are allowed so list of days
+    can be capped
+
+
+    import Date
+    import Time exposing (Month(..))
+
+    dayOptions
+        (Date.fromCalendarDate 2022 May 1)
+        (Date.fromCalendarDate 2022 Aug 15)
+    |> List.length
+    --> 31
+
+    dayOptions
+        (Date.fromCalendarDate 2022 Feb 1)
+        (Date.fromCalendarDate 2022 Jun 15)
+    |> List.length
+    --> 28
+
+    dayOptions
+        (Date.fromCalendarDate 2022 Jun 1)
+        (Date.fromCalendarDate 2022 Jun 15)
+    |> List.length
+    --> 15
+
 -}
 dayOptions : Birthdate -> Today -> List (Html msg)
 dayOptions birthdate today =
     let
         maxValidDay =
             min
-                (if isInBirthdayMonth birthdate today then
+                (if inBirthdayMonth birthdate today then
                     Date.day today
 
                  else

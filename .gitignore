@@ -20,3 +20,5 @@ index.html
 # code editors/IDEs
 .vscode
 
+# elm-verify-examples working directory
+tests/VerifyExamples/*
