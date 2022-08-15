@@ -1,6 +1,6 @@
 module BirthdayTest exposing (..)
 
-import Birthdays exposing (PlanetaryBirthday, calculateBirthdays)
+import Birthdays
 import Date
 import Expect
 import Main
@@ -13,7 +13,7 @@ fallbackDate =
     Date.fromCalendarDate 1 Jan 1
 
 
-badPlanet : PlanetaryBirthday
+badPlanet : Birthdays.PlanetaryBirthday
 badPlanet =
     { planetName = "BadPlanet"
     , age = 99999
@@ -22,7 +22,7 @@ badPlanet =
     }
 
 
-notMercury : PlanetaryBirthday
+notMercury : Birthdays.PlanetaryBirthday
 notMercury =
     { planetName = "NotMercury"
     , age = 21
@@ -31,22 +31,22 @@ notMercury =
     }
 
 
-isMercury : PlanetaryBirthday -> Bool
+isMercury : Birthdays.PlanetaryBirthday -> Bool
 isMercury planetaryBirthday =
     planetaryBirthday.planetName == "Mercury"
 
 
-isVenus : PlanetaryBirthday -> Bool
+isVenus : Birthdays.PlanetaryBirthday -> Bool
 isVenus planetaryBirthday =
     planetaryBirthday.planetName == "Venus"
 
 
-isEarth : PlanetaryBirthday -> Bool
+isEarth : Birthdays.PlanetaryBirthday -> Bool
 isEarth planetaryBirthday =
     planetaryBirthday.planetName == "Earth"
 
 
-isJupiter : PlanetaryBirthday -> Bool
+isJupiter : Birthdays.PlanetaryBirthday -> Bool
 isJupiter planetaryBirthday =
     planetaryBirthday.planetName == "Jupiter"
 
@@ -127,7 +127,7 @@ complex =
             \_ ->
                 let
                     planetaryBirthdays =
-                        calculateBirthdays
+                        Birthdays.calculateBirthdays
                             (Date.fromCalendarDate 2022 May 15)
                             (Date.fromCalendarDate 2022 Aug 10)
 
@@ -146,7 +146,7 @@ complex =
             \_ ->
                 let
                     planetaryBirthdays =
-                        calculateBirthdays
+                        Birthdays.calculateBirthdays
                             (Date.fromCalendarDate 2022 May 15)
                             (Date.fromCalendarDate 2022 Aug 10)
 
@@ -165,7 +165,7 @@ complex =
             \_ ->
                 let
                     planetaryBirthdays =
-                        calculateBirthdays
+                        Birthdays.calculateBirthdays
                             (Date.fromCalendarDate 2022 May 15)
                             (Date.fromCalendarDate 2022 Aug 10)
 
@@ -184,7 +184,7 @@ complex =
             \_ ->
                 let
                     planetaryBirthdays =
-                        calculateBirthdays
+                        Birthdays.calculateBirthdays
                             (Date.fromCalendarDate 2022 May 15)
                             (Date.fromCalendarDate 2022 May 14)
 
@@ -203,7 +203,7 @@ complex =
             \_ ->
                 let
                     planetaryBirthdays =
-                        calculateBirthdays
+                        Birthdays.calculateBirthdays
                             (Date.fromCalendarDate 2022 May 15)
                             (Date.fromCalendarDate 2022 May 15)
 
