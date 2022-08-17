@@ -1,4 +1,14 @@
-module Main exposing (Model, Msg, dayOptions, isLeapYear, main, monthNames, validMonth)
+module Main exposing
+    ( Model
+    , Msg
+    , dayOptions
+    , isLeapYear
+    , main
+    , monthNames
+    , updateBirthdateDay
+    , updateBirthdateMonth
+    , validMonth
+    )
 
 {-| A mind-alternating bit of silliness called 9 Birthdays
 
@@ -139,6 +149,9 @@ type alias Model =
     isLeapYear 2000
     --> True
 
+    isLeapYear 1900
+    --> False
+
     isLeapYear 1984
     --> True
 
@@ -173,6 +186,24 @@ fallbackBirthdate =
     Date.fromCalendarDate fallbackYear fallbackMonth fallbackDay
 
 
+{-| update a birthdate with a valid day
+
+    import Date
+    import Time exposing (Month(..))
+
+    -- simple
+    updateBirthdateDay
+        (Date.fromCalendarDate 2000 Jan 1)
+        "31"
+    --> Date.fromCalendarDate 2000 Jan 31
+
+    -- leap year
+    updateBirthdateDay
+        (Date.fromCalendarDate 2020 Feb 1)
+        "29"
+    --> Date.fromCalendarDate 2020 Feb 29
+
+-}
 updateBirthdateDay : Birthdate -> String -> Birthdate
 updateBirthdateDay birthdate dayString =
     Date.fromCalendarDate
@@ -181,6 +212,22 @@ updateBirthdateDay birthdate dayString =
         (Maybe.withDefault fallbackDay (String.toInt dayString))
 
 
+{-| update a birthdate with a valid month
+
+    import Date
+    import Time exposing (Month(..))
+
+    updateBirthdateMonth
+        (Date.fromCalendarDate 2000 Jan 1)
+        "2"
+    --> Date.fromCalendarDate 2000 Feb 1
+
+    updateBirthdateMonth
+        (Date.fromCalendarDate 2000 Dec 1)
+        "1"
+    --> Date.fromCalendarDate 2000 Jan 1
+
+-}
 updateBirthdateMonth : Birthdate -> String -> Birthdate
 updateBirthdateMonth birthdate monthString =
     Date.fromCalendarDate
