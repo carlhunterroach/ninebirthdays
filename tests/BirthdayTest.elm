@@ -130,8 +130,8 @@ forEarthBirthdayTestSameDay () =
         |> Expect.equal (Date.fromCalendarDate 2023 Jan 31)
 
 
-forJupiterCheckBirthday : () -> Expect.Expectation
-forJupiterCheckBirthday () =
+forJupiterTestBirthday : () -> Expect.Expectation
+forJupiterTestBirthday () =
     let
         planetaryBirthdays =
             Birthdays.calculateBirthdays
@@ -253,7 +253,7 @@ complex =
     describe "date functions"
         [ test "Earth birthday is correct age?" forEarthTestAge
         , test "Earth birthday is same day of month/year?" forEarthBirthdayTestSameDay
-        , test "check Jupiter birthday occurs (11.8618 * 365.25) days later" forJupiterCheckBirthday
+        , test "check Jupiter birthday occurs (11.8618 * 365.25) days later" forJupiterTestBirthday
         , test "check Mercury birthday occurs 87.969 days later" forMercuryTestBirthday
         , test "check Venus birthday occurs 224.701 days later" forVenusTestBirthday
         , test "check future birthdate calculates age as 1 not 0" forFutureTestAge1Not0
