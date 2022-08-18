@@ -4,6 +4,7 @@ module Birthdays exposing
     , Today
     , calculateBirthdays
     , compare
+    , test
     )
 
 {-| birthdays and ages on solar system planets
@@ -38,6 +39,12 @@ type alias PlanetaryBirthday =
     , age : Years
     , date : Birthday
     , todayOnEarth : Today
+    }
+
+
+test =
+    { daysSinceBirth = daysSinceBirth
+    , yearsSinceBirth = yearsSinceBirth
     }
 
 

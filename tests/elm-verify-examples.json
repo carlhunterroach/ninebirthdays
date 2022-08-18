@@ -1,6 +1,8 @@
 {
   "root": "../src",
   "tests": [
-    "Main"
+    "Main",
+    "Birthdays",
+    "DatePlus"
   ]
 }

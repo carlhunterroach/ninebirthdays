@@ -2,7 +2,6 @@ module Main exposing
     ( Model
     , Msg
     , dayOptions
-    , isLeapYear
     , main
     , monthNames
     , updateBirthdateDay
@@ -37,6 +36,7 @@ import Browser.Navigation
 import Char exposing (isAlpha)
 import Css
 import Date
+import DatePlus exposing (isLeapYear)
 import FormatNumber
 import FormatNumber.Locales exposing (Decimals(..), usLocale)
 import Html.Styled
@@ -139,26 +139,6 @@ type alias Model =
 
 
 -- FUNCTIONS
-
-
-{-|
-
-    isLeapYear 2001
-    --> False
-
-    isLeapYear 2000
-    --> True
-
-    isLeapYear 1900
-    --> False
-
-    isLeapYear 1984
-    --> True
-
--}
-isLeapYear : Year -> Bool
-isLeapYear y =
-    modBy 4 y == 0 && modBy 100 y /= 0 || modBy 400 y == 0
 
 
 fallbackDay : number
@@ -683,6 +663,7 @@ namesOfMonth month =
 
     -- is future month in current year valid?
     validMonth (Date.fromCalendarDate 2022 Jan 1) 2022 Feb
+    --> False
 
 -}
 validMonth : Today -> Year -> Month -> Bool
