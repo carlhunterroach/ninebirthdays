@@ -29,7 +29,7 @@ module Main exposing
 
 -}
 
-import Birthdays exposing (Birthdate, PlanetaryBirthday, Today)
+import Birthdays exposing (Birthdate, PlanetaryBirthday, Today, isBirthdayToday)
 import Browser
 import Browser.Dom
 import Browser.Navigation
@@ -378,20 +378,6 @@ birthdateFromUrl url today =
             fallbackBirthdate
 
 
-type When
-    = Today
-    | Future
-
-
-whenIsBirthday : PlanetaryBirthday -> When
-whenIsBirthday birthday =
-    if Date.compare birthday.date birthday.todayOnEarth == EQ then
-        Today
-
-    else
-        Future
-
-
 smartBirthdayMessage : PlanetaryBirthday -> List (Html msg)
 smartBirthdayMessage birthday =
     {-
@@ -399,38 +385,34 @@ smartBirthdayMessage birthday =
        while technically the next birthday is an orit away
        we really should shout out Happy Birthday today!
     -}
-    let
-        ordinalisedDate =
-            Ordinal.ordinal (Date.format "d" birthday.date)
-                ++ Date.format " MMM y" birthday.date
-    in
-    case whenIsBirthday birthday of
-        Today ->
-            [ span
-                [ css [ Css.fontFamily Css.cursive ] ]
-                [ text "Happy Birthday today!" ]
-            ]
+    if isBirthdayToday birthday.date birthday.todayOnEarth then
+        [ span
+            [ css [ Css.fontFamily Css.cursive ] ]
+            [ text "Happy Birthday today!" ]
+        ]
 
-        Future ->
-            [ text ordinalisedDate
-            ]
+    else
+        [ text
+            (Ordinal.ordinal (Date.format "d" birthday.date)
+                ++ Date.format " MMM y" birthday.date
+            )
+        ]
 
 
 viewBirthday : PlanetaryBirthday -> Html Msg
 viewBirthday birthday =
     let
         smartRowStyle =
-            case whenIsBirthday birthday of
-                Today ->
-                    [ css
-                        [ Css.color backdropTextColor
-                        , Css.fontFamily Css.cursive
-                        , Css.fontSize (Css.pct 105)
-                        ]
+            if isBirthdayToday birthday.date birthday.todayOnEarth then
+                [ css
+                    [ Css.color backdropTextColor
+                    , Css.fontFamily Css.cursive
+                    , Css.fontSize (Css.pct 105)
                     ]
+                ]
 
-                Future ->
-                    []
+            else
+                []
 
         spanAtPercentage : Float -> String -> Html msg
         spanAtPercentage percentage content =
