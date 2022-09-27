@@ -1,6 +1,7 @@
 module BirthdayTest exposing (..)
 
 import Birthdays
+import Css exposing (Ex)
 import Date
 import Expect
 import Main
@@ -214,8 +215,8 @@ forFutureTestAge1Not0 () =
             Debug.todo "Never can reach here"
 
 
-forBirthdateTodayTestAgeIs1 : () -> Expect.Expectation
-forBirthdateTodayTestAgeIs1 () =
+forAlienBirthdateTodayTestAgeIs1 : () -> Expect.Expectation
+forAlienBirthdateTodayTestAgeIs1 () =
     let
         planetaryBirthdays =
             Birthdays.calculateBirthdays
@@ -248,6 +249,23 @@ forCurrentYearTestNoFutureMonthsOffered () =
         |> Expect.equal 3
 
 
+isTodayABirthday : () -> Expect.Expectation
+isTodayABirthday () =
+    let
+        today =
+            Date.fromCalendarDate 2022 Mar 1
+
+        birthday =
+            Date.fromCalendarDate 2000 Mar 1
+    in
+    Birthdays.isBirthdayToday birthday today |> Expect.equal True
+
+
+isAgeCorrectWhenTodayIsBirthday : () -> Expect.Expectation
+isAgeCorrectWhenTodayIsBirthday () =
+    Birthdays.nextEarthAge (Date.fromCalendarDate 2021 Sep 1) (Date.fromCalendarDate 2022 Sep 1) |> Expect.equal 1
+
+
 complex : Test
 complex =
     describe "date functions"
@@ -257,6 +275,10 @@ complex =
         , test "check Mercury birthday occurs 87.969 days later" forMercuryTestBirthday
         , test "check Venus birthday occurs 224.701 days later" forVenusTestBirthday
         , test "check future birthdate calculates age as 1 not 0" forFutureTestAge1Not0
-        , test "check birthdate falling today calculates age as 1" forBirthdateTodayTestAgeIs1
+        , test "check birthdate falling today calculates age as 1" forAlienBirthdateTodayTestAgeIs1
         , test "check no future months in current year offered" forCurrentYearTestNoFutureMonthsOffered
+        , test "is today a birthday?"
+            isTodayABirthday
+        , test "check birthday falling today age today"
+            isAgeCorrectWhenTodayIsBirthday
         ]

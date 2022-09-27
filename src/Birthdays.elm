@@ -1,10 +1,12 @@
 module Birthdays exposing
     ( Birthdate
+    , Birthday
     , PlanetaryBirthday
     , Today
     , calculateBirthdays
     , compare
-    , test
+    , isBirthdayToday
+    , nextEarthAge
     )
 
 {-| birthdays and ages on solar system planets
@@ -42,12 +44,6 @@ type alias PlanetaryBirthday =
     }
 
 
-test =
-    { daysSinceBirth = daysSinceBirth
-    , yearsSinceBirth = yearsSinceBirth
-    }
-
-
 toAge : Planet -> Birthdate -> Today -> Int
 toAge planet birthdate today =
     case planet of
@@ -80,9 +76,28 @@ yearsSinceBirth birthdate today =
     Basics.max 0 (Date.diff Date.Years birthdate today)
 
 
+isBirthdayToday : Birthday -> Today -> Bool
+isBirthdayToday birthday today =
+    Date.day birthday
+        == Date.day today
+        && Date.month birthday
+        == Date.month today
+
+
+
+{- !
+   special case: if today's a birthday then return today's age
+   and not the age at next birthday
+-}
+
+
 nextEarthAge : Birthdate -> Today -> Int
 nextEarthAge birthdate today =
-    yearsSinceBirth birthdate today + 1
+    if isBirthdayToday birthdate today then
+        yearsSinceBirth birthdate today
+
+    else
+        yearsSinceBirth birthdate today + 1
 
 
 nextAlienAge : Birthdate -> Today -> OrbitDays -> Int
